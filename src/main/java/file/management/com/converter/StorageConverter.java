@@ -9,11 +9,11 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 public class StorageConverter {
-    public static DBObject toDBObject(Storage storage){
+    public static DBObject toDBObject(Storage storage) {
         BasicDBObjectBuilder builder = BasicDBObjectBuilder.start()
-                .append("owner", storage.getOwner())
-                .append("type", storage.getType())
-                .append("parent", storage.getParent())
+                .append("owner", new ObjectId(storage.getOwner()))
+                .append("type", new ObjectId(storage.getType()))
+                .append("parent", storage.getParent() == null ? null : new ObjectId(storage.getParent()))
                 .append("name", storage.getName())
                 .append("body", storage.getBody())
                 .append("created_at", storage.getCreatedAt())
@@ -34,8 +34,12 @@ public class StorageConverter {
         storage.setType(type.toString());
 
 
-        ObjectId parent = (ObjectId) doc.get("parent");
-        storage.setParent(parent.toString());
+        if(doc.get("parent") != null){
+            ObjectId parent = (ObjectId) doc.get("parent");
+            storage.setParent(parent.toString());
+        } else {
+            storage.setParent(null);
+        }
 
         storage.setName((String) doc.get("name"));
 

@@ -28,6 +28,18 @@ public class StorageDAO {
         return storages;
     }
 
+    public  List<Storage> getFolderByUser(String owner){
+        List<Storage> storages = new ArrayList<Storage>();
+        DBObject query = new BasicDBObject("parent", null).append("owner", new ObjectId(owner));
+        DBCursor cursor = col.find(query);
+        while (cursor.hasNext()) {
+            DBObject doc = cursor.next();
+            Storage storage = StorageConverter.toStorage(doc);
+            storages.add(storage);
+        }
+        return storages;
+    }
+
     public Storage create(Storage storage){
         DBObject doc = StorageConverter.toDBObject(storage);
         this.col.insert(doc);

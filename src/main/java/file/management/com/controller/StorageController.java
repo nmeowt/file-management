@@ -20,15 +20,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "storage", urlPatterns = {"/storage"}, initParams = {@WebInitParam(name = "upload_path", value = "/var/www/upload")})
-@MultipartConfig(fileSizeThreshold = 1024 * 1024,
-        maxFileSize = 1024 * 1024 * 5,
-        maxRequestSize = 1024 * 1024 * 5 * 5)
+@MultipartConfig
 public class StorageController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -40,13 +41,7 @@ public class StorageController extends HttpServlet {
         TypeDAO typeDAO = new TypeDAO(mongo);
         UserDAO userDAO = new UserDAO(mongo);
         List<Storage> storages = storageDAO.getAll();
-        List<StorageDTO> storagesDTO = new ArrayList<>();
-        for (Storage storage : storages) {
-            Type type = typeDAO.getById(storage.getType());
-            User user = userDAO.getById(storage.getOwner());
-            StorageDTO storageDTO = new StorageDTO(storage, type, user);
-            storagesDTO.add(storageDTO);
-        }
+        List<StorageDTO> storagesDTO = convertDTO(typeDAO, userDAO, storages);
         String context = "";
         context = getString(context, storagesDTO);
         resp.setContentType("application/json");
@@ -55,7 +50,18 @@ public class StorageController extends HttpServlet {
         out.flush();
     }
 
-    public String getString(String context, List<StorageDTO> storagesDTO) {
+    static List<StorageDTO> convertDTO(TypeDAO typeDAO, UserDAO userDAO, List<Storage> storages) {
+        List<StorageDTO> storagesDTO = new ArrayList<>();
+        for (Storage storage : storages) {
+            Type type = typeDAO.getById(storage.getType());
+            User user = userDAO.getById(storage.getOwner());
+            StorageDTO storageDTO = new StorageDTO(storage, type, user);
+            storagesDTO.add(storageDTO);
+        }
+        return storagesDTO;
+    }
+
+    static String getString(String context, List<StorageDTO> storagesDTO) {
         for (StorageDTO storageDTO : storagesDTO) {
             String data = "{" +
                     "\"id\": \"" + storageDTO.getId() + "\"," +
@@ -72,7 +78,7 @@ public class StorageController extends HttpServlet {
                     "\"created_at\": \"" + storageDTO.getCreatedAt() + "\"," +
                     "\"modified_at\": \"" + storageDTO.getModifiedAt() + "\"" +
                     "}";
-            context += data;
+            context += data + ",";
         }
         return context;
     }
@@ -80,6 +86,9 @@ public class StorageController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, FileNotFoundException {
+        String message = null;
+        boolean check = false;
+
         String owner = req.getParameter("owner");
         String type = req.getParameter("type");
         String parent = req.getParameter("parent");
@@ -88,38 +97,40 @@ public class StorageController extends HttpServlet {
         MongoClient mongo = (MongoClient) req.getServletContext()
                 .getAttribute("MONGO_CLIENT");
         StorageDAO storageDAO = new StorageDAO(mongo);
+        String dir = null;
 
-        ServletOutputStream os = resp.getOutputStream();
         ServletConfig sc = getServletConfig();
         String path = sc.getInitParameter("upload_path");
-
-        String fileName = "";
-        String dir = "";
-        for (Part part : req.getParts()) {
-            fileName = getFileName(part);
-            if (fileName != "") {
-                dir = path + File.separator + fileName;
-//                part.write(dir);
-            }
+        Part filePart = req.getPart("body");
+        String fileName = filePart.getSubmittedFileName();
+        InputStream is = filePart.getInputStream();
+        if(filePart.getSize()>0){
+            dir = path + File.separator + fileName;
+            Files.copy(is, Paths.get(dir), StandardCopyOption.REPLACE_EXISTING);
         }
-        Storage storage = new Storage();
-        storage.setOwner(owner);
-        storage.setType(type);
-        storage.setParent(parent);
-        storage.setName(name);
-        storage.setBody(dir);
-        storage.setCreatedAt(Timestamp.from(Instant.now()));
-        storage.setModifiedAt(Timestamp.from(Instant.now()));
-        storageDAO.create(storage);
 
-        req.setAttribute("message", "File " + fileName + " has uploaded successfully!");
-    }
-
-    private String getFileName(Part part) {
-        for (String content : part.getHeader("content-disposition").split(";")) {
-            if (content.trim().startsWith("filename"))
-                return content.substring(content.indexOf("=") + 2, content.length() - 1);
+        if (owner == null || type == null || name == null) {
+            message = "owner, type, name can not be empty";
+        } else {
+            Storage storage = new Storage();
+            storage.setOwner(owner);
+            storage.setType(type);
+            storage.setParent(parent);
+            storage.setName(name);
+            storage.setBody(dir);
+            storage.setCreatedAt(Timestamp.from(Instant.now()));
+            storage.setModifiedAt(Timestamp.from(Instant.now()));
+            storageDAO.create(storage);
+            check = true;
+            message = "inserted storage successfully";
         }
-        return "";
+        resp.setContentType("application/json");
+        PrintWriter out = resp.getWriter();
+        String context = "{" +
+                "\"status\": \"" + check + "\"," +
+                "\"message\": \"" + message + "\"," +
+                "}";
+        out.print(context);
+        out.flush();
     }
 }
