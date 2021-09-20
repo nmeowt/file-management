@@ -8,23 +8,24 @@ import file.management.com.dto.StorageDTO;
 import file.management.com.model.Storage;
 import file.management.com.model.Type;
 import file.management.com.model.User;
-import file.management.com.utils.Constants;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet("/storage")
+@WebServlet(name = "storage", urlPatterns = {"/storage"}, initParams = {@WebInitParam(name = "upload_path", value = "/var/www/upload")})
 @MultipartConfig(fileSizeThreshold = 1024 * 1024,
         maxFileSize = 1024 * 1024 * 5,
         maxRequestSize = 1024 * 1024 * 5 * 5)
@@ -84,15 +85,33 @@ public class StorageController extends HttpServlet {
         String parent = req.getParameter("parent");
         String name = req.getParameter("name");
 
-        Part body = req.getPart("body");
+        MongoClient mongo = (MongoClient) req.getServletContext()
+                .getAttribute("MONGO_CLIENT");
+        StorageDAO storageDAO = new StorageDAO(mongo);
+
+        ServletOutputStream os = resp.getOutputStream();
+        ServletConfig sc = getServletConfig();
+        String path = sc.getInitParameter("upload_path");
 
         String fileName = "";
+        String dir = "";
         for (Part part : req.getParts()) {
             fileName = getFileName(part);
-            fileName = new File(fileName).getName();
-            System.out.println( File.separator );
-//            part.write(this.getFolderUpload().getAbsolutePath() + File.separator + fileName);
+            if (fileName != "") {
+                dir = path + File.separator + fileName;
+//                part.write(dir);
+            }
         }
+        Storage storage = new Storage();
+        storage.setOwner(owner);
+        storage.setType(type);
+        storage.setParent(parent);
+        storage.setName(name);
+        storage.setBody(dir);
+        storage.setCreatedAt(Timestamp.from(Instant.now()));
+        storage.setModifiedAt(Timestamp.from(Instant.now()));
+        storageDAO.create(storage);
+
         req.setAttribute("message", "File " + fileName + " has uploaded successfully!");
     }
 
@@ -101,15 +120,6 @@ public class StorageController extends HttpServlet {
             if (content.trim().startsWith("filename"))
                 return content.substring(content.indexOf("=") + 2, content.length() - 1);
         }
-        return Constants.DEFAULT_FILENAME;
-    }
-
-    public File getFolderUpload() {
-        System.out.println(System.getProperty("user.home"));
-        File folderUpload = new File(System.getProperty("user.home") + "/Uploads");
-        if (!folderUpload.exists()) {
-            folderUpload.mkdirs();
-        }
-        return folderUpload;
+        return "";
     }
 }

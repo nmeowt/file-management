@@ -2,29 +2,27 @@ file/management/com/controller/TypeController.java
  file.management.com.controller.TypeController
 file/management/com/listener/MongoDBContextListener.java
  file.management.com.listener.MongoDBContextListener
-file/management/com/utils/Constants.java
- file.management.com.utils.Constants
 file/management/com/model/Storage.java
  file.management.com.model.Storage
 file/management/com/converter/UserConverter.java
  file.management.com.converter.UserConverter
 file/management/com/dao/TypeDAO.java
  file.management.com.dao.TypeDAO
-file/management/com/controller/LoginController.java
- file.management.com.controller.LoginController
 file/management/com/converter/TypeConverter.java
  file.management.com.converter.TypeConverter
+file/management/com/controller/LoginController.java
+ file.management.com.controller.LoginController
 file/management/com/dao/StorageDAO.java
  file.management.com.dao.StorageDAO
 file/management/com/dao/UserDAO.java
  file.management.com.dao.UserDAO
 file/management/com/model/Type.java
  file.management.com.model.Type
-file/management/com/controller/StorageController.java
- file.management.com.controller.StorageController
 file/management/com/model/User.java
  file.management.com.model.User
 file/management/com/dto/StorageDTO.java
  file.management.com.dto.StorageDTO
 file/management/com/converter/StorageConverter.java
  file.management.com.converter.StorageConverter
+file/management/com/controller/StorageController.java
+ file.management.com.controller.StorageController
