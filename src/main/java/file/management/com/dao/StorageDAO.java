@@ -1,11 +1,10 @@
 package file.management.com.dao;
 
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
+import com.mongodb.*;
 import file.management.com.converter.StorageConverter;
+import file.management.com.converter.TypeConverter;
 import file.management.com.model.Storage;
+import file.management.com.model.Type;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -35,5 +34,15 @@ public class StorageDAO {
         ObjectId id = (ObjectId) doc.get("_id");
         storage.setId(id.toString());
         return storage;
+    }
+
+    public void update(Storage storage){
+        DBObject query = BasicDBObjectBuilder.start().append("_id", new ObjectId(storage.getId())).get();
+        this.col.update(query, StorageConverter.toDBObject(storage));
+    }
+
+    public void delete(Storage storage){
+        DBObject query = BasicDBObjectBuilder.start().append("_id", new ObjectId(storage.getId())).get();
+        this.col.remove(query);
     }
 }
