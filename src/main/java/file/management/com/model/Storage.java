@@ -1,46 +1,53 @@
 package file.management.com.model;
 
+import org.bson.codecs.pojo.annotations.BsonProperty;
+import org.bson.types.ObjectId;
+
 import java.sql.Timestamp;
 
 public class Storage {
-    private String id;
-    private String owner;
-    private String type;
-    private String parent;
+    private ObjectId id;
+    @BsonProperty(value = "owner")
+    private int owner;
+    @BsonProperty(value = "type")
+    private int type;
+    @BsonProperty(value = "parent")
+    private int parent;
     private String name;
     private String body;
     private Timestamp createdAt;
     private Timestamp modifiedAt;
+    private int storage_id;
 
-    public String getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 
-    public String getOwner() {
+    public int getOwner() {
         return owner;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(int owner) {
         this.owner = owner;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 
-    public String getParent() {
+    public int getParent() {
         return parent;
     }
 
-    public void setParent(String parent) {
+    public void setParent(int parent) {
         this.parent = parent;
     }
 
@@ -74,5 +81,13 @@ public class Storage {
 
     public void setModifiedAt(Timestamp modifiedAt) {
         this.modifiedAt = modifiedAt;
+    }
+
+    public int getStorage_id() {
+        return storage_id;
+    }
+
+    public void setStorage_id(int storage_id) {
+        this.storage_id = storage_id;
     }
 }

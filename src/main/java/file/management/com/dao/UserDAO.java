@@ -1,11 +1,7 @@
 package file.management.com.dao;
 
 import com.mongodb.*;
-import file.management.com.converter.TypeConverter;
-import file.management.com.converter.UserConverter;
-import file.management.com.model.Type;
 import file.management.com.model.User;
-import org.bson.types.ObjectId;
 
 public class UserDAO {
     DBCollection col;
@@ -26,17 +22,16 @@ public class UserDAO {
         return false;
     }
 
-    public User getById(String id){
-        DBObject query = BasicDBObjectBuilder.start().append("_id", new ObjectId(id)).get();
-        DBObject data = this.col.findOne(query);
-        return UserConverter.toUser(data);
-    }
+//    public User getById(String id){
+//        DBObject query = BasicDBObjectBuilder.start().append("_id", new ObjectId(id)).get();
+//        DBObject data = this.col.findOne(query);
+//    }
 
     public User create(User user) {
-        DBObject doc = UserConverter.toDBObject(user);
-        this.col.insert(doc);
-        ObjectId id = (ObjectId) doc.get("_id");
-        user.setId(id.toString());
+//        DBObject doc = UserConverter.toDBObject(user);
+//        this.col.insert(doc);
+//        ObjectId id = (ObjectId) doc.get("_id");
+//        user.setId(id.toString());
         return user;
     }
 }

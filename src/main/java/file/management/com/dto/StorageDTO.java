@@ -16,7 +16,7 @@ public class StorageDTO {
     private Timestamp modifiedAt;
 
     public StorageDTO(Storage storage, Type type, User owner){
-        this.id = storage.getId();
+//        this.id = storage.getId();
         this.type = type;
         this.owner = owner;
         this.name = storage.getName();

@@ -1,20 +1,23 @@
 package file.management.com.model;
 
+import org.bson.types.ObjectId;
+
 import java.sql.Timestamp;
 
 public class User {
-    private String id;
+    private ObjectId id;
     private String username;
     private String password;
     private String name;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    private int userId;
 
-    public String getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 
@@ -56,5 +59,13 @@ public class User {
 
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

@@ -80,7 +80,7 @@ public class TypeController extends HttpServlet {
             MongoClient mongo = (MongoClient) req.getServletContext()
                     .getAttribute("MONGO_CLIENT");
             Type type = new Type();
-            type.setId(id);
+//            type.setId(id);
             type.setName(name);
             TypeDAO typeDAO = new TypeDAO(mongo);
             typeDAO.update(type);
@@ -108,7 +108,7 @@ public class TypeController extends HttpServlet {
             MongoClient mongo = (MongoClient) req.getServletContext()
                     .getAttribute("MONGO_CLIENT");
             Type type = new Type();
-            type.setId(id);
+//            type.setId(id);
             TypeDAO typeDAO = new TypeDAO(mongo);
             typeDAO.delete(type);
             check = true;

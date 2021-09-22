@@ -1,14 +1,17 @@
 package file.management.com.model;
 
-public class Type {
-    private String id;
-    private String name;
+import org.bson.types.ObjectId;
 
-    public String getId() {
+public class Type {
+    private ObjectId id;
+    private String name;
+    private int typeId;
+
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 
@@ -18,5 +21,13 @@ public class Type {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
     }
 }
