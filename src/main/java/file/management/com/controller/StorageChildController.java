@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 @WebServlet(name = "storage_child", urlPatterns = {"/storage/get_child"})
@@ -27,13 +26,8 @@ public class StorageChildController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String parent = req.getParameter("parent");
-
-        try (MongoClient mongoClient = MongoClients.create(Constants.CONNECTION_STRING)) {
-            MongoDatabase database = mongoClient.getDatabase("file_management");
-            MongoCollection<Document> mongoCollection = database.getCollection(collection);
-            StorageDAO storageDAO = new StorageDAO();
-            List<Document> docs = storageDAO.readChildItem(mongoCollection, Integer.parseInt(parent));
-            StorageController.getString(resp, docs);
-        }
+        StorageDAO storageDAO = new StorageDAO();
+        List<Document> docs = storageDAO.readChildItem(Integer.parseInt(parent));
+        StorageController.getString(resp, docs);
     }
 }

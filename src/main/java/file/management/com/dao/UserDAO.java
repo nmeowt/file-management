@@ -1,37 +1,47 @@
 package file.management.com.dao;
 
 import com.mongodb.*;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import file.management.com.constants.Constants;
 import file.management.com.model.User;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
 public class UserDAO {
-    DBCollection col;
+    private static final String collection = "user";
 
-    public UserDAO(MongoClient mongo) {
-        this.col = mongo.getDB("file_management").getCollection("user");
-    }
-
-    public boolean checkLogin(String username, String password) {
-        DBObject query = BasicDBObjectBuilder.start()
-                .append("username", username)
-                .append("password", password)
-                .get();
-        DBObject data = this.col.findOne(query);
-        if (data != null){
-            return true;
+    public boolean checkLogin( String username, String password) {
+        try (MongoClient mongoClient = MongoClients.create(Constants.CONNECTION_STRING)) {
+            MongoDatabase database = mongoClient.getDatabase("file_management");
+            MongoCollection<Document> mongoCollection = database.getCollection(collection);
+            Document user = mongoCollection.find(
+                    Filters.and(
+                            Filters.eq("username", username),
+                            Filters.eq("password", password)
+                    )).first();
+            if (user != null) {
+                return true;
+            }
+            return false;
         }
-        return false;
     }
 
-//    public User getById(String id){
-//        DBObject query = BasicDBObjectBuilder.start().append("_id", new ObjectId(id)).get();
-//        DBObject data = this.col.findOne(query);
-//    }
-
-    public User create(User user) {
-//        DBObject doc = UserConverter.toDBObject(user);
-//        this.col.insert(doc);
-//        ObjectId id = (ObjectId) doc.get("_id");
-//        user.setId(id.toString());
-        return user;
+    public void create(User user) {
+        try (MongoClient mongoClient = MongoClients.create(Constants.CONNECTION_STRING)) {
+            MongoDatabase database = mongoClient.getDatabase("file_management");
+            MongoCollection<Document> mongoCollection = database.getCollection(collection);
+            Document document = new Document("_id", new ObjectId());
+            document.append("username", user.getUsername())
+                    .append("password", user.getPassword())
+                    .append("name", user.getName())
+                    .append("created_at", user.getCreatedAt())
+                    .append("modified_at", user.getModifiedAt())
+                    .append("user_id", user.getUserId());
+            mongoCollection.insertOne(document);
+        }
     }
 }

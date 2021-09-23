@@ -17,7 +17,7 @@ public class Storage {
     private String body;
     private Timestamp createdAt;
     private Timestamp modifiedAt;
-    private int storage_id;
+    private int storageId;
 
     public ObjectId getId() {
         return id;
@@ -83,11 +83,11 @@ public class Storage {
         this.modifiedAt = modifiedAt;
     }
 
-    public int getStorage_id() {
-        return storage_id;
+    public int getStorageId() {
+        return storageId;
     }
 
-    public void setStorage_id(int storage_id) {
-        this.storage_id = storage_id;
+    public void setStorageId(int storageId) {
+        this.storageId = storageId;
     }
 }

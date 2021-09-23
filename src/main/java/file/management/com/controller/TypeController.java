@@ -3,6 +3,7 @@ package file.management.com.controller;
 import com.mongodb.MongoClient;
 import file.management.com.dao.TypeDAO;
 import file.management.com.model.Type;
+import org.bson.Document;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -19,26 +20,9 @@ import java.util.List;
 public class TypeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        MongoClient mongo = (MongoClient) req.getServletContext()
-                .getAttribute("MONGO_CLIENT");
-        TypeDAO typeDAO = new TypeDAO(mongo);
-        List<Type> types = typeDAO.getAll();
-        String context = "";
-        for (Type type : types) {
-            context += getString(type);
-        }
-        resp.setContentType("application/json");
-        PrintWriter out = resp.getWriter();
-        out.print("[" + context + "]");
-        out.flush();
-    }
-
-    public String getString(Type type) {
-        String context = "{" +
-                "\"id\": \"" + type.getId() + "\"," +
-                "\"name\": \"" + type.getName() + "\"" +
-                "},";
-        return context;
+        TypeDAO typeDAO = new TypeDAO();
+        List<Document> docs = typeDAO.getAll();
+        StorageController.getString(resp, docs);
     }
 
     @Override
@@ -49,11 +33,9 @@ public class TypeController extends HttpServlet {
         if (name == null) {
             message = "name cannot be empty";
         } else {
-            MongoClient mongo = (MongoClient) req.getServletContext()
-                    .getAttribute("MONGO_CLIENT");
             Type type = new Type();
             type.setName(name);
-            TypeDAO typeDAO = new TypeDAO(mongo);
+            TypeDAO typeDAO = new TypeDAO();
             typeDAO.create(type);
             check = true;
             message = "inserted type successfully";
@@ -77,12 +59,10 @@ public class TypeController extends HttpServlet {
         if (id == null || name == null) {
             message = "id and name cannot be empty";
         } else {
-            MongoClient mongo = (MongoClient) req.getServletContext()
-                    .getAttribute("MONGO_CLIENT");
             Type type = new Type();
-//            type.setId(id);
+            type.setTypeId(Integer.parseInt(id));
             type.setName(name);
-            TypeDAO typeDAO = new TypeDAO(mongo);
+            TypeDAO typeDAO = new TypeDAO();
             typeDAO.update(type);
             check = true;
             message = "updated type - " + id + " successfully";
@@ -105,11 +85,9 @@ public class TypeController extends HttpServlet {
         if (id == null) {
             message = "id cannot be empty";
         } else {
-            MongoClient mongo = (MongoClient) req.getServletContext()
-                    .getAttribute("MONGO_CLIENT");
             Type type = new Type();
-//            type.setId(id);
-            TypeDAO typeDAO = new TypeDAO(mongo);
+            type.setTypeId(Integer.parseInt(id));
+            TypeDAO typeDAO = new TypeDAO();
             typeDAO.delete(type);
             check = true;
             message = "deleted type - " + id + " successfully";

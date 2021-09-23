@@ -10,7 +10,7 @@ public class User {
     private String password;
     private String name;
     private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private Timestamp modifiedAt;
     private int userId;
 
     public ObjectId getId() {
@@ -53,12 +53,12 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public Timestamp getUpdatedAt() {
-        return updatedAt;
+    public Timestamp getModifiedAt() {
+        return modifiedAt;
     }
 
-    public void setUpdatedAt(Timestamp updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setModifiedAt(Timestamp modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 
     public int getUserId() {

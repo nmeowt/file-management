@@ -1,7 +1,12 @@
 package file.management.com.controller;
 
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import file.management.com.constants.Constants;
 import file.management.com.dao.UserDAO;
+import org.bson.Document;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -19,21 +24,20 @@ public class LoginController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String message = null;
         boolean check = false;
 
-        if(username == null && password == null){
+        if (username == null && password == null) {
             message = "username and password cannot be empty";
         } else {
-            MongoClient mongo = (MongoClient) req.getServletContext().getAttribute("MONGO_CLIENT");
-            UserDAO userDAO = new UserDAO(mongo);
+            UserDAO userDAO = new UserDAO();
             check = userDAO.checkLogin(username, password);
             message = (check) ? "login successfully" : "wrong username or password";
         }
 
-        System.out.println(message);
         resp.setContentType("application/json");
         PrintWriter out = resp.getWriter();
         String context = "{" +
@@ -48,7 +52,7 @@ public class LoginController extends HttpServlet {
 
     private void setAccessControlHeaders(HttpServletResponse resp) {
         resp.setHeader("Access-Control-Allow-Origin", "http://localhost:3000/");
-        resp.setHeader("Access-Control-Allow-Methods","GET, OPTIONS, HEAD, PUT, POST");
+        resp.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD, PUT, POST");
         resp.setHeader("Access-Control-Allow-Headers", "Content-Type, token, Access-Control-Allow-Headers, Authorization, X-Requested-With");
     }
 }

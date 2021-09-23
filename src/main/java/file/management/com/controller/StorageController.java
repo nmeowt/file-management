@@ -37,25 +37,20 @@ import java.util.List;
 @MultipartConfig
 public class StorageController extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final String collection = "storage";
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String owner = req.getParameter("owner");
-
-        try (MongoClient mongoClient = MongoClients.create(Constants.CONNECTION_STRING)) {
-            MongoDatabase database = mongoClient.getDatabase("file_management");
-            MongoCollection<Document> mongoCollection = database.getCollection(collection);
-            StorageDAO storageDAO = new StorageDAO();
-            List<Document> docs = storageDAO.readRoot(mongoCollection, Integer.parseInt(owner));
-            getString(resp, docs);
-        }
+        StorageDAO storageDAO = new StorageDAO();
+        List<Document> docs = storageDAO.readRoot(Integer.parseInt(owner));
+        getString(resp, docs);
     }
 
     static void getString(HttpServletResponse resp, List<Document> docs) throws IOException {
         String context = "";
-        for (Document storage : docs) {
-            context += storage.toJson() + ",";
+        for (Document doc : docs) {
+            context += doc.toJson() + ",";
         }
         resp.setContentType("application/json");
         PrintWriter out = resp.getWriter();
@@ -84,46 +79,41 @@ public class StorageController extends HttpServlet {
         String type = req.getParameter("type");
         String parent = req.getParameter("parent");
         String name = req.getParameter("name");
-        try (MongoClient mongoClient = MongoClients.create(Constants.CONNECTION_STRING)) {
-            MongoDatabase database = mongoClient.getDatabase("file_management");
-            MongoCollection<Document> mongoCollection = database.getCollection(collection);
-            StorageDAO storageDAO = new StorageDAO();
-            String dir = null;
+        StorageDAO storageDAO = new StorageDAO();
+        String dir = null;
 
-            ServletConfig sc = getServletConfig();
-            String path = sc.getInitParameter("upload_path");
-            Part filePart = req.getPart("body");
-            String fileName = filePart.getSubmittedFileName();
-            InputStream is = filePart.getInputStream();
-            if (filePart.getSize() > 0) {
-                dir = path + File.separator + fileName;
-                Files.copy(is, Paths.get(dir), StandardCopyOption.REPLACE_EXISTING);
-            }
-
-            if (owner == null || type == null || name == null) {
-                message = "owner, type, name can not be empty";
-            } else {
-                Storage storage = new Storage();
-                storage.setOwner(Integer.parseInt(owner));
-                storage.setType(Integer.parseInt(type));
-                storage.setParent(parent.equals("") ? null : Integer.parseInt(parent));
-                storage.setName(name);
-                storage.setBody(dir);
-                storage.setCreatedAt(Timestamp.from(Instant.now()));
-                storage.setModifiedAt(Timestamp.from(Instant.now()));
-                storageDAO.insert(mongoCollection, storage);
-                check = true;
-                message = "inserted storage successfully";
-            }
-            resp.setContentType("application/json");
-            PrintWriter out = resp.getWriter();
-            String context = "{" +
-                    "\"status\": \"" + check + "\"," +
-                    "\"message\": \"" + message + "\"," +
-                    "}";
-            out.print(context);
-            out.flush();
+        ServletConfig sc = getServletConfig();
+        String path = sc.getInitParameter("upload_path");
+        Part filePart = req.getPart("body");
+        String fileName = filePart.getSubmittedFileName();
+        InputStream is = filePart.getInputStream();
+        if (filePart.getSize() > 0) {
+            dir = path + File.separator + fileName;
+            Files.copy(is, Paths.get(dir), StandardCopyOption.REPLACE_EXISTING);
         }
 
+        if (owner == null || type == null || name == null) {
+            message = "owner, type, name can not be empty";
+        } else {
+            Storage storage = new Storage();
+            storage.setOwner(Integer.parseInt(owner));
+            storage.setType(Integer.parseInt(type));
+            storage.setParent(parent.equals("") ? null : Integer.parseInt(parent));
+            storage.setName(name);
+            storage.setBody(dir);
+            storage.setCreatedAt(Timestamp.from(Instant.now()));
+            storage.setModifiedAt(Timestamp.from(Instant.now()));
+            storageDAO.insert(storage);
+            check = true;
+            message = "inserted storage successfully";
+        }
+        resp.setContentType("application/json");
+        PrintWriter out = resp.getWriter();
+        String context = "{" +
+                "\"status\": \"" + check + "\"," +
+                "\"message\": \"" + message + "\"," +
+                "}";
+        out.print(context);
+        out.flush();
     }
 }

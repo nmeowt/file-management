@@ -1,8 +1,13 @@
 package file.management.com.controller;
 
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import file.management.com.constants.Constants;
 import file.management.com.dao.UserDAO;
 import file.management.com.model.User;
+import org.bson.Document;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -18,6 +23,9 @@ import java.time.Instant;
 @WebServlet(name = "signup", urlPatterns = {"/signup"})
 @MultipartConfig
 public class SignUpController extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+    private static final String collection = "user";
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String message = null;
@@ -26,18 +34,16 @@ public class SignUpController extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String name = req.getParameter("name");
-        if(username == null || password == null || name == null){
+        if (username == null || password == null || name == null) {
             message = "username, password, name cannot be empty";
         } else {
-            MongoClient mongo = (MongoClient) req.getServletContext().getAttribute("MONGO_CLIENT");
-            UserDAO userDAO = new UserDAO(mongo);
-
+            UserDAO userDAO = new UserDAO();
             User user = new User();
             user.setUsername(username);
             user.setPassword(password);
             user.setName(name);
             user.setCreatedAt(Timestamp.from(Instant.now()));
-            user.setUpdatedAt(Timestamp.from(Instant.now()));
+            user.setModifiedAt(Timestamp.from(Instant.now()));
             userDAO.create(user);
             check = true;
             message = "create new user successfully";
