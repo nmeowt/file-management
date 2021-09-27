@@ -1,22 +1,11 @@
 package file.management.com.controller;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import file.management.com.constants.Constants;
 import file.management.com.dao.StorageDAO;
-import file.management.com.dao.TypeDAO;
-import file.management.com.dao.UserDAO;
-import file.management.com.dto.StorageDTO;
 import file.management.com.model.Storage;
-import file.management.com.model.Type;
-import file.management.com.model.User;
 import org.bson.Document;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
@@ -30,7 +19,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "storage", urlPatterns = {"/storage"}, initParams = {@WebInitParam(name = "upload_path", value = "/var/www/upload")})
@@ -57,18 +45,6 @@ public class StorageController extends HttpServlet {
         out.print("[" + context + "]");
         out.flush();
     }
-
-    static List<StorageDTO> convertDTO(TypeDAO typeDAO, UserDAO userDAO, List<Storage> storages) {
-        List<StorageDTO> storagesDTO = new ArrayList<>();
-        /*for (Storage storage : storages) {
-            Type type = typeDAO.getById(storage.getType());
-            User user = userDAO.getById(storage.getOwner());
-            StorageDTO storageDTO = new StorageDTO(storage, type, user);
-            storagesDTO.add(storageDTO);
-        }*/
-        return storagesDTO;
-    }
-
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, FileNotFoundException {
