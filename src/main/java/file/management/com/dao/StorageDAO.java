@@ -4,13 +4,16 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import file.management.com.constants.Constants;
 import file.management.com.model.Storage;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -21,10 +24,12 @@ public class StorageDAO {
         try (MongoClient mongoClient = MongoClients.create(Constants.CONNECTION_STRING)) {
             MongoDatabase database = mongoClient.getDatabase("file_management");
             MongoCollection<Document> mongoCollection = database.getCollection(collection);
-            List<Document> storageList = mongoCollection.find(Filters.and(
+            Bson match = Aggregates.match(Filters.and(
                     Filters.eq("owner", owner),
                     Filters.eq("parent", null)
-            )).into(new ArrayList<>());
+            ));
+            Bson pipeline = Aggregates.lookup("type", "type", "type_id", "type");
+            List<Document> storageList = mongoCollection.aggregate(Arrays.asList(match, pipeline)).into(new ArrayList<>());
             return storageList;
         }
     }
@@ -33,9 +38,11 @@ public class StorageDAO {
         try (MongoClient mongoClient = MongoClients.create(Constants.CONNECTION_STRING)) {
             MongoDatabase database = mongoClient.getDatabase("file_management");
             MongoCollection<Document> mongoCollection = database.getCollection(collection);
-            List<Document> storageList = mongoCollection.find(
-                    new Document("parent", parent)
-            ).into(new ArrayList<>());
+            Bson match = Aggregates.match(Filters.and(
+                    Filters.eq("parent", parent)
+            ));
+            Bson pipeline = Aggregates.lookup("type", "type", "type_id", "type");
+            List<Document> storageList = mongoCollection.aggregate(Arrays.asList(match, pipeline)).into(new ArrayList<>());
             return storageList;
         }
     }
