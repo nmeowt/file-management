@@ -1,65 +1,130 @@
 package file.management.com.dao;
 
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Aggregates;
-import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.FindOneAndReplaceOptions;
+import com.mongodb.client.model.ReturnDocument;
+import com.mongodb.client.model.Sorts;
+import com.mongodb.client.result.DeleteResult;
 import file.management.com.constants.Constants;
 import file.management.com.model.Storage;
+import file.management.com.mongo.Connection;
 import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+
+import static com.mongodb.client.model.Filters.*;
 
 
 public class StorageDAO {
     private static final String collection = "storage";
+    MongoClientSettings clientSettings;
 
-    public List<Document> readRoot(int owner) {
-        try (MongoClient mongoClient = MongoClients.create(Constants.CONNECTION_STRING)) {
+    public StorageDAO() {
+        this.clientSettings = Connection.open();
+    }
+
+    public List<Storage> readRoot(int owner, int offset, int limit) {
+        try (MongoClient mongoClient = MongoClients.create(this.clientSettings)) {
             MongoDatabase database = mongoClient.getDatabase("file_management");
-            MongoCollection<Document> mongoCollection = database.getCollection(collection);
-            Bson match = Aggregates.match(Filters.and(
-                    Filters.eq("owner", owner),
-                    Filters.eq("parent", null)
-            ));
-            Bson pipeline = Aggregates.lookup("type", "type", "type_id", "type");
-            List<Document> storageList = mongoCollection.aggregate(Arrays.asList(match, pipeline)).into(new ArrayList<>());
+            MongoCollection<Storage> storages = database.getCollection(collection, Storage.class);
+            List<Storage> storageList = storages.find(
+                    and(
+                            eq("owner", owner),
+                            gte("storage_id", offset),
+                            eq("parent", 0)
+                    )
+            ).sort(Sorts.descending("storage_id"))
+                    .limit(limit).into(new ArrayList<>());
             return storageList;
         }
     }
 
-    public List<Document> readChildItem(int parent) {
-        try (MongoClient mongoClient = MongoClients.create(Constants.CONNECTION_STRING)) {
+    public List<Storage> readChildItem(int parent, int offset, int limit) {
+        try (MongoClient mongoClient = MongoClients.create(this.clientSettings)) {
             MongoDatabase database = mongoClient.getDatabase("file_management");
-            MongoCollection<Document> mongoCollection = database.getCollection(collection);
-            Bson match = Aggregates.match(Filters.and(
-                    Filters.eq("parent", parent)
-            ));
-            Bson pipeline = Aggregates.lookup("type", "type", "type_id", "type");
-            List<Document> storageList = mongoCollection.aggregate(Arrays.asList(match, pipeline)).into(new ArrayList<>());
+            MongoCollection<Storage> storages = database.getCollection(collection, Storage.class);
+            List<Storage> storageList = storages.find(
+                    and(
+                            eq("parent", parent),
+                            gte("storage_id", offset)
+                    )
+            ).sort(Sorts.descending("storage_id"))
+                    .limit(limit).into(new ArrayList<>());
+            return storageList;
+        }
+    }
+
+    public List<Storage> readAllByType(int type) {
+        try (MongoClient mongoClient = MongoClients.create(this.clientSettings)) {
+            MongoDatabase database = mongoClient.getDatabase("file_management");
+            MongoCollection<Storage> storages = database.getCollection(collection, Storage.class);
+            List<Storage> storageList = storages.find(
+                    eq("type", type)
+            ).into(new ArrayList<>());
             return storageList;
         }
     }
 
     public void insert(Storage storage) {
-        try (MongoClient mongoClient = MongoClients.create(Constants.CONNECTION_STRING)) {
+        try (MongoClient mongoClient = MongoClients.create(this.clientSettings)) {
             MongoDatabase database = mongoClient.getDatabase("file_management");
-            MongoCollection<Document> mongoCollection = database.getCollection(collection);
-            Document document = new Document("_id", new ObjectId());
-            document.append("owner", storage.getOwner())
-                    .append("type", storage.getType())
-                    .append("parent", storage.getParent())
-                    .append("name", storage.getName())
-                    .append("body", storage.getBody())
-                    .append("created_at", storage.getCreatedAt())
-                    .append("modified_at", storage.getModifiedAt());
-            mongoCollection.insertOne(document);
+            MongoCollection<Storage> storages = database.getCollection(collection, Storage.class);
+            storages.insertOne(storage);
+        }
+    }
+
+    public void rename(int storageId, String name) {
+        try (MongoClient mongoClient = MongoClients.create(this.clientSettings)) {
+            MongoDatabase database = mongoClient.getDatabase("file_management");
+            MongoCollection<Storage> storages = database.getCollection(collection, Storage.class);
+
+            Storage storage = storages.find(eq("storage_id", storageId)).first();
+            storage.setName(name);
+            storage.setModifiedAt(new Date());
+            Document filterByStorageId = new Document("_id", storage.getId());
+            storages.findOneAndReplace(filterByStorageId, storage);
+        }
+    }
+
+    public void changeParent(int storageId, int parent) {
+        try (MongoClient mongoClient = MongoClients.create(this.clientSettings)) {
+            MongoDatabase database = mongoClient.getDatabase("file_management");
+            MongoCollection<Storage> storages = database.getCollection(collection, Storage.class);
+
+            Storage storage = storages.find(eq("storage_id", storageId)).first();
+            storage.setParent(parent);
+            storage.setModifiedAt(new Date());
+            Document filterByStorageId = new Document("_id", storage.getId());
+            storages.findOneAndReplace(filterByStorageId, storage);
+        }
+    }
+
+    public void deleteById(int storageId) {
+        try (MongoClient mongoClient = MongoClients.create(this.clientSettings)) {
+            MongoDatabase database = mongoClient.getDatabase("file_management");
+            MongoCollection<Storage> storages = database.getCollection(collection, Storage.class);
+            List<Storage> storageList = storages.find(eq("parent", storageId))
+                    .into(new ArrayList<>());
+            if (storageList.size() != 0) {
+                Document filterToDeleteParent = new Document("parent", storageId);
+                storages.deleteMany(filterToDeleteParent);
+            }
+            Document filterDeleteStorage = new Document("storage_id", storageId);
+            storages.deleteOne(filterDeleteStorage);
         }
     }
 }

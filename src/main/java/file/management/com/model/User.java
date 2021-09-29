@@ -1,16 +1,20 @@
 package file.management.com.model;
 
+import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class User {
     private ObjectId id;
     private String username;
     private String password;
     private String name;
-    private Timestamp createdAt;
-    private Timestamp modifiedAt;
+    @BsonProperty(value = "created_at")
+    private Date createdAt;
+    @BsonProperty(value = "modified_at")
+    private Date modifiedAt;
+    @BsonProperty(value = "user_id")
     private int userId;
 
     public ObjectId getId() {
@@ -45,19 +49,19 @@ public class User {
         this.name = name;
     }
 
-    public Timestamp getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Timestamp getModifiedAt() {
+    public Date getModifiedAt() {
         return modifiedAt;
     }
 
-    public void setModifiedAt(Timestamp modifiedAt) {
+    public void setModifiedAt(Date modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
 
@@ -67,5 +71,29 @@ public class User {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", createdAt=" + createdAt +
+                ", modifiedAt=" + modifiedAt +
+                ", userId=" + userId +
+                '}';
+    }
+
+    public String toJson() {
+        return "{" +
+                "\"id\":\"" + id + "\"" +
+                ", \"username\":\"" + username + "\"" +
+                ", \"name\":\"" + name + "\"" +
+                ", \"createdAt\":\"" + createdAt + "\"" +
+                ", \"modifiedAt\":\"" + modifiedAt + "\"" +
+                ", \"userId\":" + userId +
+                '}';
     }
 }

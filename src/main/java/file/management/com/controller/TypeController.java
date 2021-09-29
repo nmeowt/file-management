@@ -3,6 +3,7 @@ package file.management.com.controller;
 import com.mongodb.MongoClient;
 import file.management.com.dao.TypeDAO;
 import file.management.com.model.Type;
+import file.management.com.utils.ResponseAlert;
 import org.bson.Document;
 
 import javax.servlet.ServletException;
@@ -21,8 +22,8 @@ public class TypeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         TypeDAO typeDAO = new TypeDAO();
-        List<Document> docs = typeDAO.getAll();
-        StorageController.getString(resp, docs);
+        List<Type> types = typeDAO.getAll();
+        ResponseAlert.getStringType(resp, types);
     }
 
     @Override
@@ -40,14 +41,7 @@ public class TypeController extends HttpServlet {
             check = true;
             message = "inserted type successfully";
         }
-        resp.setContentType("application/json");
-        PrintWriter out = resp.getWriter();
-        String context = "{" +
-                "\"status\": \"" + check + "\"," +
-                "\"message\": \"" + message + "\"," +
-                "}";
-        out.print(context);
-        out.flush();
+        ResponseAlert.response(resp, message, check);
     }
 
     @Override
@@ -67,14 +61,7 @@ public class TypeController extends HttpServlet {
             check = true;
             message = "updated type - " + id + " successfully";
         }
-        resp.setContentType("application/json");
-        PrintWriter out = resp.getWriter();
-        String context = "{" +
-                "\"status\": \"" + check + "\"," +
-                "\"message\": \"" + message + "\"," +
-                "}";
-        out.print(context);
-        out.flush();
+        ResponseAlert.response(resp, message, check);
     }
 
     @Override
@@ -92,14 +79,6 @@ public class TypeController extends HttpServlet {
             check = true;
             message = "deleted type - " + id + " successfully";
         }
-
-        resp.setContentType("application/json");
-        PrintWriter out = resp.getWriter();
-        String context = "{" +
-                "\"status\": \"" + check + "\"," +
-                "\"message\": \"" + message + "\"," +
-                "}";
-        out.print(context);
-        out.flush();
+        ResponseAlert.response(resp, message, check);
     }
 }

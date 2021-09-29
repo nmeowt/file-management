@@ -3,20 +3,20 @@ package file.management.com.model;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class Storage {
     private ObjectId id;
-    @BsonProperty(value = "owner")
     private int owner;
-    @BsonProperty(value = "type")
     private int type;
-    @BsonProperty(value = "parent")
     private int parent;
     private String name;
     private String body;
-    private Timestamp createdAt;
-    private Timestamp modifiedAt;
+    @BsonProperty(value = "created_at")
+    private Date createdAt;
+    @BsonProperty(value = "modified_at")
+    private Date modifiedAt;
+    @BsonProperty(value = "storage_id")
     private int storageId;
 
     public ObjectId getId() {
@@ -67,19 +67,19 @@ public class Storage {
         this.body = body;
     }
 
-    public Timestamp getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Timestamp getModifiedAt() {
+    public Date getModifiedAt() {
         return modifiedAt;
     }
 
-    public void setModifiedAt(Timestamp modifiedAt) {
+    public void setModifiedAt(Date modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
 
@@ -89,5 +89,34 @@ public class Storage {
 
     public void setStorageId(int storageId) {
         this.storageId = storageId;
+    }
+
+    @Override
+    public String toString() {
+        return "Storage{" +
+                "id=" + id +
+                ", owner=" + owner +
+                ", type=" + type +
+                ", parent=" + parent +
+                ", name='" + name + '\'' +
+                ", body='" + body + '\'' +
+                ", createdAt=" + createdAt +
+                ", modifiedAt=" + modifiedAt +
+                ", storageId=" + storageId +
+                '}';
+    }
+
+    public String toJson() {
+        return "{" +
+                "\"id\":\"" + id + "\"" +
+                ", \"owner\":" + owner +
+                ", \"type\":" + type +
+                ", \"parent\":" + parent +
+                ", \"name\":\"" + name + "\"" +
+                ", \"body\":\"" + body + "\"" +
+                ", \"createdAt\":\"" + createdAt + "\"" +
+                ", \"modifiedAt\":\"" + modifiedAt + "\"" +
+                ", \"storageId\":" + storageId +
+                '}';
     }
 }

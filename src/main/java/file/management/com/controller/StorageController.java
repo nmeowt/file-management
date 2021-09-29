@@ -2,7 +2,7 @@ package file.management.com.controller;
 
 import file.management.com.dao.StorageDAO;
 import file.management.com.model.Storage;
-import org.bson.Document;
+import file.management.com.utils.ResponseAlert;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -17,8 +17,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 @WebServlet(name = "storage", urlPatterns = {"/storage"}, initParams = {@WebInitParam(name = "upload_path", value = "/var/www/upload")})
@@ -29,22 +28,15 @@ public class StorageController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String owner = req.getParameter("owner");
+        int owner = Integer.parseInt(req.getParameter("owner"));
+        int offset = Integer.parseInt(req.getParameter("offset"));
+        int limit = Integer.parseInt(req.getParameter("limit"));
         StorageDAO storageDAO = new StorageDAO();
-        List<Document> docs = storageDAO.readRoot(Integer.parseInt(owner));
-        getString(resp, docs);
+        List<Storage> storages = storageDAO.readRoot(owner, offset, limit);
+        ResponseAlert.getStringStorage(resp, storages);
     }
 
-    static void getString(HttpServletResponse resp, List<Document> docs) throws IOException {
-        String context = "";
-        for (Document doc : docs) {
-            context += doc.toJson() + ",";
-        }
-        resp.setContentType("application/json");
-        PrintWriter out = resp.getWriter();
-        out.print("[" + context + "]");
-        out.flush();
-    }
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, FileNotFoundException {
@@ -77,19 +69,28 @@ public class StorageController extends HttpServlet {
             storage.setParent(parent.equals("") ? null : Integer.parseInt(parent));
             storage.setName(name);
             storage.setBody(dir);
-            storage.setCreatedAt(Timestamp.from(Instant.now()));
-            storage.setModifiedAt(Timestamp.from(Instant.now()));
+            storage.setCreatedAt(new Date());
+            storage.setModifiedAt(new Date());
             storageDAO.insert(storage);
             check = true;
             message = "inserted storage successfully";
         }
-        resp.setContentType("application/json");
-        PrintWriter out = resp.getWriter();
-        String context = "{" +
-                "\"status\": \"" + check + "\"," +
-                "\"message\": \"" + message + "\"," +
-                "}";
-        out.print(context);
-        out.flush();
+        ResponseAlert.response(resp, message, check);
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String message = null;
+        boolean check = false;
+        int storageId = Integer.parseInt(req.getParameter("storage_id"));
+        if (storageId == 0) {
+            message = "storage id cannot be empty";
+        } else {
+            StorageDAO storageDAO = new StorageDAO();
+            storageDAO.deleteById(storageId);
+            check = true;
+            message = "deleted storage successfully";
+        }
+        ResponseAlert.response(resp, message, check);
     }
 }

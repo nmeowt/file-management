@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Date;
 
 @WebServlet(name = "signup", urlPatterns = {"/signup"})
 @MultipartConfig
@@ -42,8 +43,8 @@ public class SignUpController extends HttpServlet {
             user.setUsername(username);
             user.setPassword(password);
             user.setName(name);
-            user.setCreatedAt(Timestamp.from(Instant.now()));
-            user.setModifiedAt(Timestamp.from(Instant.now()));
+            user.setCreatedAt(new Date());
+            user.setModifiedAt(new Date());
             userDAO.create(user);
             check = true;
             message = "create new user successfully";

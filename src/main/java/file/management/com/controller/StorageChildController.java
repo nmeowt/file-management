@@ -6,6 +6,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import file.management.com.constants.Constants;
 import file.management.com.dao.StorageDAO;
+import file.management.com.model.Storage;
+import file.management.com.utils.ResponseAlert;
 import org.bson.Document;
 
 import javax.servlet.ServletException;
@@ -21,13 +23,14 @@ import java.util.List;
 @MultipartConfig
 public class StorageChildController extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final String collection = "storage";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String parent = req.getParameter("parent");
+        int parent = Integer.parseInt(req.getParameter("parent"));
+        int offset = Integer.parseInt(req.getParameter("offset"));
+        int limit = Integer.parseInt(req.getParameter("limit"));
         StorageDAO storageDAO = new StorageDAO();
-        List<Document> docs = storageDAO.readChildItem(Integer.parseInt(parent));
-        StorageController.getString(resp, docs);
+        List<Storage> storages = storageDAO.readChildItem(parent, offset, limit);
+        ResponseAlert.getStringStorage(resp, storages);
     }
 }

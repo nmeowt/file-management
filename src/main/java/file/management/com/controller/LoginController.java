@@ -6,6 +6,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import file.management.com.constants.Constants;
 import file.management.com.dao.UserDAO;
+import file.management.com.utils.ResponseAlert;
 import org.bson.Document;
 
 import javax.servlet.ServletException;
@@ -17,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet("/login")
+@WebServlet(name = "login", urlPatterns = {"/login"})
 @MultipartConfig
 public class LoginController extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -37,22 +38,6 @@ public class LoginController extends HttpServlet {
             check = userDAO.checkLogin(username, password);
             message = (check) ? "login successfully" : "wrong username or password";
         }
-
-        resp.setContentType("application/json");
-        PrintWriter out = resp.getWriter();
-        String context = "{" +
-                "\"status\": \"" + check + "\"," +
-                "\"message\": \"" + message + "\"," +
-                "}";
-        out.print(context);
-        out.flush();
-        setAccessControlHeaders(resp);
-        resp.setStatus(HttpServletResponse.SC_OK);
-    }
-
-    private void setAccessControlHeaders(HttpServletResponse resp) {
-        resp.setHeader("Access-Control-Allow-Origin", "http://localhost:3000/");
-        resp.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD, PUT, POST");
-        resp.setHeader("Access-Control-Allow-Headers", "Content-Type, token, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        ResponseAlert.response(resp, message, check);
     }
 }
