@@ -37,7 +37,7 @@ public class StorageDAO {
         this.clientSettings = Connection.open();
     }
 
-    public List<Storage> readRoot(int owner, int offset, int limit) {
+    public List<Storage> read(int owner,int parent, int offset, int limit) {
         try (MongoClient mongoClient = MongoClients.create(this.clientSettings)) {
             MongoDatabase database = mongoClient.getDatabase("file_management");
             MongoCollection<Storage> storages = database.getCollection(collection, Storage.class);
@@ -45,22 +45,7 @@ public class StorageDAO {
                     and(
                             eq("owner", owner),
                             gte("storage_id", offset),
-                            eq("parent", 0)
-                    )
-            ).sort(Sorts.descending("storage_id"))
-                    .limit(limit).into(new ArrayList<>());
-            return storageList;
-        }
-    }
-
-    public List<Storage> readChildItem(int parent, int offset, int limit) {
-        try (MongoClient mongoClient = MongoClients.create(this.clientSettings)) {
-            MongoDatabase database = mongoClient.getDatabase("file_management");
-            MongoCollection<Storage> storages = database.getCollection(collection, Storage.class);
-            List<Storage> storageList = storages.find(
-                    and(
-                            eq("parent", parent),
-                            gte("storage_id", offset)
+                            eq("parent", parent)
                     )
             ).sort(Sorts.descending("storage_id"))
                     .limit(limit).into(new ArrayList<>());

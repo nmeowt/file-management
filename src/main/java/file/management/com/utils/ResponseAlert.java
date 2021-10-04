@@ -49,8 +49,9 @@ public class ResponseAlert {
     }
 
     private static void setAccessControlHeaders(HttpServletResponse resp) {
-        resp.setHeader("Access-Control-Allow-Origin", "http://localhost:3000/");
+        resp.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
         resp.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD, PUT, POST");
-        resp.setHeader("Access-Control-Allow-Headers", "Content-Type, token, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        resp.setHeader("Access-Control-Max-Age", "3600");
+        resp.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     }
 }
