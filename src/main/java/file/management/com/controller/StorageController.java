@@ -57,6 +57,7 @@ public class StorageController extends HttpServlet {
         InputStream is = filePart.getInputStream();
         if (filePart.getSize() > 0) {
             dir = path + File.separator + fileName;
+            System.out.println(dir);
             Files.copy(is, Paths.get(dir), StandardCopyOption.REPLACE_EXISTING);
         }
 
