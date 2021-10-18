@@ -12,14 +12,11 @@ public class ResponseAlert {
     public static void response(HttpServletResponse resp, String message, boolean check) throws IOException {
         resp.setContentType("application/json");
         PrintWriter out = resp.getWriter();
-        String context = "{" +
-                "\"status\": \"" + check + "\"," +
-                "\"message\": \"" + message + "\"," +
-                "}";
+        String context = "{" + "\"status\": \"" + check + "\"," + "\"message\": \"" + message + "\"" + "}";
         out.print(context);
-        out.flush();
         setAccessControlHeaders(resp);
         resp.setStatus(HttpServletResponse.SC_OK);
+        out.flush();
     }
 
     public static void getStringStorage(HttpServletResponse resp, List<Storage> storages) throws IOException {
@@ -27,11 +24,12 @@ public class ResponseAlert {
         for (Storage storage : storages) {
             context += storage.toJson() + ",";
         }
-        setAccessControlHeaders(resp);
-        resp.setStatus(HttpServletResponse.SC_OK);
+        String newContext = context.substring(0, context.length() - 1);
         resp.setContentType("application/json");
         PrintWriter out = resp.getWriter();
-        out.print("[" + context + "]");
+        out.print("[" + newContext + "]");
+        setAccessControlHeaders(resp);
+        resp.setStatus(HttpServletResponse.SC_OK);
         out.flush();
     }
 
@@ -45,12 +43,16 @@ public class ResponseAlert {
         resp.setContentType("application/json");
         PrintWriter out = resp.getWriter();
         out.print("[" + context + "]");
+        setAccessControlHeaders(resp);
+        resp.setStatus(HttpServletResponse.SC_OK);
         out.flush();
     }
 
     private static void setAccessControlHeaders(HttpServletResponse resp) {
-        resp.setHeader("Access-Control-Allow-Origin", "http://localhost:3000/");
+        resp.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
         resp.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD, PUT, POST");
-        resp.setHeader("Access-Control-Allow-Headers", "Content-Type, token, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        resp.setHeader("Access-Control-Allow-Headers",
+                "Accept,Authorization,Cache-Control,Content-Type,Keep-Alive,Origin,User-Agent,X-Requested-With");
+        resp.setHeader("Access-Control-Allow-Credentials", "true");
     }
 }

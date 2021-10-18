@@ -20,11 +20,11 @@ import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.List;
 
-@WebServlet(name = "storage", urlPatterns = {"/storage"}, initParams = {@WebInitParam(name = "upload_path", value = "/var/www/upload")})
+@WebServlet(name = "storage", urlPatterns = { "/storage" }, initParams = {
+        @WebInitParam(name = "upload_path", value = "/var/www/upload") })
 @MultipartConfig
 public class StorageController extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -32,14 +32,13 @@ public class StorageController extends HttpServlet {
         int offset = Integer.parseInt(req.getParameter("offset"));
         int limit = Integer.parseInt(req.getParameter("limit"));
         StorageDAO storageDAO = new StorageDAO();
-        List<Storage> storages = storageDAO.readRoot(owner, offset, limit);
-        System.out.println("hello");
+        List<Storage> storages = storageDAO.read(owner, 0, offset, limit);
         ResponseAlert.getStringStorage(resp, storages);
     }
 
-
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, FileNotFoundException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException, FileNotFoundException {
         String message = null;
         boolean check = false;
 
@@ -57,6 +56,7 @@ public class StorageController extends HttpServlet {
         InputStream is = filePart.getInputStream();
         if (filePart.getSize() > 0) {
             dir = path + File.separator + fileName;
+            System.out.println(dir);
             Files.copy(is, Paths.get(dir), StandardCopyOption.REPLACE_EXISTING);
         }
 

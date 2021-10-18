@@ -26,11 +26,12 @@ public class StorageChildController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int owner = Integer.parseInt(req.getParameter("owner"));
         int parent = Integer.parseInt(req.getParameter("parent"));
         int offset = Integer.parseInt(req.getParameter("offset"));
         int limit = Integer.parseInt(req.getParameter("limit"));
         StorageDAO storageDAO = new StorageDAO();
-        List<Storage> storages = storageDAO.readChildItem(parent, offset, limit);
+        List<Storage> storages = storageDAO.read(owner, parent, offset, limit);
         ResponseAlert.getStringStorage(resp, storages);
     }
 }

@@ -1,31 +1,57 @@
+<<<<<<< HEAD
 file/management/com/constants/Constants.java
  file.management.com.constants.Constants
+=======
+file/management/com/dao/UserDAO.java
+ file.management.com.dao.UserDAO
+>>>>>>> d4f58d49b80e95a2d98434c266f9ada002bd6d9f
 file/management/com/model/Storage.java
  file.management.com.model.Storage
 file/management/com/dao/TypeDAO.java
  file.management.com.dao.TypeDAO
+<<<<<<< HEAD
 file/management/com/model/User.java
  file.management.com.model.User
 file/management/com/model/Type.java
  file.management.com.model.Type
 file/management/com/dao/UserDAO.java
  file.management.com.dao.UserDAO
+=======
+file/management/com/model/Type.java
+ file.management.com.model.Type
+file/management/com/model/User.java
+ file.management.com.model.User
+file/management/com/constants/Constants.java
+ file.management.com.constants.Constants
+>>>>>>> d4f58d49b80e95a2d98434c266f9ada002bd6d9f
 file/management/com/dao/StorageDAO.java
  file.management.com.dao.StorageDAO
 file/management/com/mongo/Connection.java
  file.management.com.mongo.Connection
 file/management/com/controller/SignUpController.java
  file.management.com.controller.SignUpController
+<<<<<<< HEAD
 file/management/com/controller/TypeController.java
  file.management.com.controller.TypeController
+=======
+>>>>>>> d4f58d49b80e95a2d98434c266f9ada002bd6d9f
 file/management/com/controller/StorageChildController.java
  file.management.com.controller.StorageChildController
+file/management/com/controller/TypeController.java
+ file.management.com.controller.TypeController
 file/management/com/controller/RenameStorageController.java
  file.management.com.controller.RenameStorageController
+<<<<<<< HEAD
 file/management/com/controller/UpdateProfileController.java
  file.management.com.controller.UpdateProfileController
 file/management/com/controller/LoginController.java
  file.management.com.controller.LoginController
+=======
+file/management/com/controller/LoginController.java
+ file.management.com.controller.LoginController
+file/management/com/controller/UpdateProfileController.java
+ file.management.com.controller.UpdateProfileController
+>>>>>>> d4f58d49b80e95a2d98434c266f9ada002bd6d9f
 file/management/com/controller/ChangeParentController.java
  file.management.com.controller.ChangeParentController
 file/management/com/utils/ResponseAlert.java
