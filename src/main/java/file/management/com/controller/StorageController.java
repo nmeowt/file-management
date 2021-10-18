@@ -33,9 +33,9 @@ public class StorageController extends HttpServlet {
         int limit = Integer.parseInt(req.getParameter("limit"));
         StorageDAO storageDAO = new StorageDAO();
         List<Storage> storages = storageDAO.readRoot(owner, offset, limit);
+        System.out.println("hello");
         ResponseAlert.getStringStorage(resp, storages);
     }
-
 
 
     @Override

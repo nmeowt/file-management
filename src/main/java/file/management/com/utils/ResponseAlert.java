@@ -27,12 +27,12 @@ public class ResponseAlert {
         for (Storage storage : storages) {
             context += storage.toJson() + ",";
         }
+        setAccessControlHeaders(resp);
+        resp.setStatus(HttpServletResponse.SC_OK);
         resp.setContentType("application/json");
         PrintWriter out = resp.getWriter();
         out.print("[" + context + "]");
         out.flush();
-        setAccessControlHeaders(resp);
-        resp.setStatus(HttpServletResponse.SC_OK);
     }
 
     public static void getStringType(HttpServletResponse resp, List<Type> types) throws IOException {
@@ -40,12 +40,12 @@ public class ResponseAlert {
         for (Type type : types) {
             context += type.toJson() + ",";
         }
+        setAccessControlHeaders(resp);
+        resp.setStatus(HttpServletResponse.SC_OK);
         resp.setContentType("application/json");
         PrintWriter out = resp.getWriter();
         out.print("[" + context + "]");
         out.flush();
-        setAccessControlHeaders(resp);
-        resp.setStatus(HttpServletResponse.SC_OK);
     }
 
     private static void setAccessControlHeaders(HttpServletResponse resp) {
