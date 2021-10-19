@@ -41,7 +41,6 @@ public class StorageController extends HttpServlet {
             throws ServletException, IOException, FileNotFoundException {
         String message = null;
         boolean check = false;
-
         String owner = req.getParameter("owner");
         String type = req.getParameter("type");
         String parent = req.getParameter("parent");
@@ -54,6 +53,11 @@ public class StorageController extends HttpServlet {
         Part filePart = req.getPart("body");
         String fileName = filePart.getSubmittedFileName();
         InputStream is = filePart.getInputStream();
+
+        System.out.println(name);
+        System.out.println(filePart);
+
+
         if (filePart.getSize() > 0) {
             dir = path + File.separator + fileName;
             System.out.println(dir);

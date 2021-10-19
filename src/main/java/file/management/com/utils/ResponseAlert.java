@@ -38,11 +38,12 @@ public class ResponseAlert {
         for (Type type : types) {
             context += type.toJson() + ",";
         }
+        String newContext = context.substring(0, context.length() - 1);
         setAccessControlHeaders(resp);
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.setContentType("application/json");
         PrintWriter out = resp.getWriter();
-        out.print("[" + context + "]");
+        out.print("[" + newContext + "]");
         setAccessControlHeaders(resp);
         resp.setStatus(HttpServletResponse.SC_OK);
         out.flush();
