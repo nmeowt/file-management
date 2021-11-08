@@ -37,52 +37,6 @@ public class StorageController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException, FileNotFoundException {
-        String message = null;
-        boolean check = false;
-        String owner = req.getParameter("owner");
-        String type = req.getParameter("type");
-        String parent = req.getParameter("parent");
-        String name = req.getParameter("name");
-        StorageDAO storageDAO = new StorageDAO();
-        String dir = null;
-
-        ServletConfig sc = getServletConfig();
-        String path = sc.getInitParameter("upload_path");
-        Part filePart = req.getPart("body");
-        String fileName = filePart.getSubmittedFileName();
-        InputStream is = filePart.getInputStream();
-
-        System.out.println(name);
-        System.out.println(filePart);
-
-
-        if (filePart.getSize() > 0) {
-            dir = path + File.separator + fileName;
-            System.out.println(dir);
-            Files.copy(is, Paths.get(dir), StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        if (owner == null || type == null || name == null) {
-            message = "owner, type, name can not be empty";
-        } else {
-            Storage storage = new Storage();
-            storage.setOwner(Integer.parseInt(owner));
-            storage.setType(Integer.parseInt(type));
-            storage.setParent(parent.equals("") ? null : Integer.parseInt(parent));
-            storage.setName(name);
-            storage.setBody(dir);
-            storage.setCreatedAt(new Date());
-            storage.setModifiedAt(new Date());
-            storageDAO.insert(storage);
-            check = true;
-            message = "inserted storage successfully";
-        }
-        ResponseAlert.response(resp, message, check);
-    }
-
-    @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String message = null;
         boolean check = false;

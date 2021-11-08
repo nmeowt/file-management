@@ -80,7 +80,7 @@ public class StorageDAO {
             Storage storage = storages.find(eq("storage_id", storageId)).first();
             storage.setName(name);
             storage.setModifiedAt(new Date());
-            Document filterByStorageId = new Document("_id", storage.getId());
+            Document filterByStorageId = new Document("storage_id", storage.getStorageId());
             storages.findOneAndReplace(filterByStorageId, storage);
         }
     }
@@ -93,7 +93,7 @@ public class StorageDAO {
             Storage storage = storages.find(eq("storage_id", storageId)).first();
             storage.setParent(parent);
             storage.setModifiedAt(new Date());
-            Document filterByStorageId = new Document("_id", storage.getId());
+            Document filterByStorageId = new Document("storage_id", storage.getStorageId());
             storages.findOneAndReplace(filterByStorageId, storage);
         }
     }

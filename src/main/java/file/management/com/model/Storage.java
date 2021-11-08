@@ -6,26 +6,19 @@ import org.bson.types.ObjectId;
 import java.util.Date;
 
 public class Storage {
-    private ObjectId id;
     private int owner;
     private int type;
     private int parent;
     private String name;
     private String body;
+    @BsonProperty(value = "file_size")
+    private int fileSize;
     @BsonProperty(value = "created_at")
     private Date createdAt;
     @BsonProperty(value = "modified_at")
     private Date modifiedAt;
     @BsonProperty(value = "storage_id")
     private int storageId;
-
-    public ObjectId getId() {
-        return id;
-    }
-
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
 
     public int getOwner() {
         return owner;
@@ -67,6 +60,14 @@ public class Storage {
         this.body = body;
     }
 
+    public int getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(int fileSize) {
+        this.fileSize = fileSize;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -94,29 +95,29 @@ public class Storage {
     @Override
     public String toString() {
         return "Storage{" +
-                "id=" + id +
+                "id=" + storageId +
                 ", owner=" + owner +
                 ", type=" + type +
                 ", parent=" + parent +
                 ", name='" + name + '\'' +
                 ", body='" + body + '\'' +
+                ", fileSize='" + fileSize + '\'' +
                 ", createdAt=" + createdAt +
                 ", modifiedAt=" + modifiedAt +
-                ", storageId=" + storageId +
                 '}';
     }
 
     public String toJson() {
         return "{" +
-                "\"id\":\"" + id + "\"" +
+                "\"id\":\"" + storageId + "\"" +
                 ", \"owner\":" + owner +
                 ", \"type\":" + type +
                 ", \"parent\":" + parent +
                 ", \"name\":\"" + name + "\"" +
                 ", \"body\":\"" + body + "\"" +
+                ", \"fileSize\":\"" + fileSize + "\"" +
                 ", \"createdAt\":\"" + createdAt + "\"" +
                 ", \"modifiedAt\":\"" + modifiedAt + "\"" +
-                ", \"storageId\":" + storageId +
                 '}';
     }
 }
