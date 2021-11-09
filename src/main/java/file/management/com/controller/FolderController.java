@@ -23,11 +23,12 @@ public class FolderController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String message = null;
         boolean check = false;
+
         String parent = req.getParameter("parent");
         String name = req.getParameter("name");
 
         if (name == null) {
-            message = "owner, type, name can not be empty";
+            message = "name, parent can not be empty";
         } else {
             StorageDAO storageDAO = new StorageDAO();
             Storage storage = new Storage();

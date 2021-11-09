@@ -11,6 +11,7 @@ import com.mongodb.client.model.FindOneAndReplaceOptions;
 import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.internal.async.SingleResultCallback;
 import file.management.com.constants.Constants;
 import file.management.com.model.Storage;
 import file.management.com.mongo.Connection;
@@ -70,6 +71,7 @@ public class StorageDAO {
             MongoCollection<Storage> storages = database.getCollection(collection, Storage.class);
             storages.insertOne(storage);
         }
+
     }
 
     public void rename(int storageId, String name) {

@@ -32,9 +32,9 @@ file/management/com/model/User.java
  file.management.com.model.User
 file/management/com/utils/ResponseAlert.java
  file.management.com.utils.ResponseAlert
-file/management/com/constants/Constants.java
- file.management.com.constants.Constants
-file/management/com/controller/FolderController.java
- file.management.com.controller.FolderController
 file/management/com/controller/FileController.java
  file.management.com.controller.FileController
+file/management/com/controller/FolderController.java
+ file.management.com.controller.FolderController
+file/management/com/constants/Constants.java
+ file.management.com.constants.Constants

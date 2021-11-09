@@ -55,7 +55,7 @@ public class FileController extends HttpServlet {
                 storage.setType(type);
                 storage.setParent(parent.equals("") ? null : Integer.parseInt(parent));
                 storage.setName(name);
-                storage.setBody("/upload" + File.separator + fileName);
+                storage.setBody(fileName);
                 storage.setFileSize((int) filePart.getSize());
                 storage.setCreatedAt(new Date());
                 storage.setModifiedAt(new Date());
