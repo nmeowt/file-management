@@ -12,12 +12,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 @WebServlet(name = "folder", urlPatterns = { "/folder" })
 @MultipartConfig
 public class FolderController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final int type = 1;
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List<Storage> storages = StorageController.getStorageByType(req, type);
+        ResponseAlert.getStringStorages(resp, storages);
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

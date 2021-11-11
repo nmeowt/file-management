@@ -4,7 +4,6 @@ import file.management.com.dao.StorageDAO;
 import file.management.com.model.Storage;
 import file.management.com.utils.ResponseAlert;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebInitParam;
@@ -12,12 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Date;
 import java.util.List;
 
 @WebServlet(name = "storage", urlPatterns = { "/storage" }, initParams = {
@@ -28,12 +22,23 @@ public class StorageController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int owner = Integer.parseInt(req.getParameter("owner"));
+        int owner = 1;
+        int parent = Integer.parseInt(req.getParameter("parent"));
         int offset = Integer.parseInt(req.getParameter("offset"));
         int limit = Integer.parseInt(req.getParameter("limit"));
         StorageDAO storageDAO = new StorageDAO();
-        List<Storage> storages = storageDAO.read(owner, 0, offset, limit);
-        ResponseAlert.getStringStorage(resp, storages);
+        List<Storage> storages = storageDAO.read(owner, parent, offset, limit);
+        ResponseAlert.getStringStorages(resp, storages);
+    }
+
+    static public List<Storage> getStorageByType(HttpServletRequest req, int type){
+        int owner = 1;
+        int parent = 0;
+        int offset = Integer.parseInt(req.getParameter("offset"));
+        int limit = Integer.parseInt(req.getParameter("limit"));
+        StorageDAO storageDAO = new StorageDAO();
+        List<Storage> storages = storageDAO.readByType(owner, parent, type, offset, limit);
+        return storages;
     }
 
     @Override

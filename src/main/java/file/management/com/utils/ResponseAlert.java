@@ -4,6 +4,7 @@ import file.management.com.model.Storage;
 import file.management.com.model.Type;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -19,7 +20,7 @@ public class ResponseAlert {
         out.flush();
     }
 
-    public static void getStringStorage(HttpServletResponse resp, List<Storage> storages) throws IOException {
+    public static void getStringStorages(HttpServletResponse resp, List<Storage> storages) throws IOException {
         String context = "";
         for (Storage storage : storages) {
             context += storage.toJson() + ",";
@@ -28,6 +29,15 @@ public class ResponseAlert {
         resp.setContentType("application/json");
         PrintWriter out = resp.getWriter();
         out.print("[" + newContext + "]");
+        setAccessControlHeaders(resp);
+        resp.setStatus(HttpServletResponse.SC_OK);
+        out.flush();
+    }
+
+    public static void getStringStorage(HttpServletResponse resp, Storage storages) throws IOException {
+        resp.setContentType("application/json");
+        PrintWriter out = resp.getWriter();
+        out.print(storages.toJson());
         setAccessControlHeaders(resp);
         resp.setStatus(HttpServletResponse.SC_OK);
         out.flush();
@@ -44,6 +54,18 @@ public class ResponseAlert {
         resp.setContentType("application/json");
         PrintWriter out = resp.getWriter();
         out.print("[" + newContext + "]");
+        setAccessControlHeaders(resp);
+        resp.setStatus(HttpServletResponse.SC_OK);
+        out.flush();
+    }
+
+    public static void reponseUploadedFile(HttpServletResponse resp, String fileName, long fileSize)throws IOException {
+        String context = "{" + "\"file_name\": \"" + fileName + "\"," + "\"file_size\": \"" + fileSize + "\"" + "}";
+        setAccessControlHeaders(resp);
+        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setContentType("application/json");
+        PrintWriter out = resp.getWriter();
+        out.print(context);
         setAccessControlHeaders(resp);
         resp.setStatus(HttpServletResponse.SC_OK);
         out.flush();
