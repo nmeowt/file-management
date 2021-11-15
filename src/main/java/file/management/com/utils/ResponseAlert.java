@@ -71,6 +71,12 @@ public class ResponseAlert {
         out.flush();
     }
 
+    public static void responseDownload(HttpServletResponse resp){
+        setAccessControlHeaders(resp);
+        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setContentType("application/json");
+    }
+
     private static void setAccessControlHeaders(HttpServletResponse resp) {
         resp.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
         resp.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD, PUT, POST");
