@@ -21,11 +21,15 @@ public class ResponseAlert {
     }
 
     public static void getStringStorages(HttpServletResponse resp, List<Storage> storages) throws IOException {
-        String context = "";
-        for (Storage storage : storages) {
-            context += storage.toJson() + ",";
+        String newContext = "";
+        if(storages.toArray().length >0){
+            String context = "";
+            for (Storage storage : storages) {
+                context += storage.toJson() + ",";
+                newContext = context.substring(0, context.length() - 1);
+            }
         }
-        String newContext = context.substring(0, context.length() - 1);
+
         resp.setContentType("application/json");
         PrintWriter out = resp.getWriter();
         out.print("[" + newContext + "]");

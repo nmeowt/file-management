@@ -1,17 +1,17 @@
+file/management/com/constants/Constants.java
+ file.management.com.constants.Constants
 file/management/com/dao/UserDAO.java
  file.management.com.dao.UserDAO
-file/management/com/controller/SignUpController.java
- file.management.com.controller.SignUpController
 file/management/com/model/Storage.java
  file.management.com.model.Storage
 file/management/com/dao/TypeDAO.java
  file.management.com.dao.TypeDAO
-file/management/com/constants/Constants.java
- file.management.com.constants.Constants
 file/management/com/model/Type.java
  file.management.com.model.Type
 file/management/com/model/User.java
  file.management.com.model.User
+file/management/com/controller/SignUpController.java
+ file.management.com.controller.SignUpController
 file/management/com/dao/StorageDAO.java
  file.management.com.dao.StorageDAO
 file/management/com/mongo/Connection.java
