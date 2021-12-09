@@ -36,6 +36,7 @@ public class FileController extends HttpServlet {
         String parent = req.getParameter("parent");
         String name = req.getParameter("name");
         String body = req.getParameter("body");
+        String location = req.getParameter("location");
         int fileSize = Integer.valueOf(req.getParameter("file_size"));
         StorageDAO storageDAO = new StorageDAO();
 
@@ -45,9 +46,10 @@ public class FileController extends HttpServlet {
             Storage storage = new Storage();
             storage.setOwner(owner);
             storage.setType(type);
-            storage.setParent(parent.equals("") ? null : Integer.parseInt(parent));
+            storage.setParent(parent.equals("") ? 0 : Integer.parseInt(parent));
             storage.setName(name);
             storage.setBody(body);
+            storage.setLocation(location);
             storage.setFileSize(fileSize);
             storage.setCreatedAt(new Date());
             storage.setModifiedAt(new Date());

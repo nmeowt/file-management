@@ -54,7 +54,7 @@ public class StorageDAO {
         }
     }
 
-    public List<Storage> readByType(int owner, int parent, int type ,int offset, int limit) {
+    public List<Storage> readByType(int owner, int parent, int type, int offset, int limit) {
         try (MongoClient mongoClient = MongoClients.create(this.clientSettings)) {
             MongoDatabase database = mongoClient.getDatabase("file_management");
             MongoCollection<Storage> storages = database.getCollection(collection, Storage.class);
@@ -82,13 +82,23 @@ public class StorageDAO {
         }
     }
 
+    public Storage readById(int id) {
+        try (MongoClient mongoClient = MongoClients.create(this.clientSettings)) {
+            MongoDatabase database = mongoClient.getDatabase("file_management");
+            MongoCollection<Storage> storages = database.getCollection(collection, Storage.class);
+            Storage storage = storages.find(
+                    eq("storage_id", id)
+            ).first();
+            return storage;
+        }
+    }
+
     public void insert(Storage storage) {
         try (MongoClient mongoClient = MongoClients.create(this.clientSettings)) {
             MongoDatabase database = mongoClient.getDatabase("file_management");
             MongoCollection<Storage> storages = database.getCollection(collection, Storage.class);
             storages.insertOne(storage);
         }
-
     }
 
     public void rename(int storageId, String name) {

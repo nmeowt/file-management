@@ -15,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -29,13 +30,24 @@ public class LoginController extends HttpServlet {
         String password = req.getParameter("password");
         String message = null;
         boolean check = false;
+        HttpSession session = req.getSession();
+
 
         if (username == null && password == null) {
             message = "username and password cannot be empty";
         } else {
-            UserDAO userDAO = new UserDAO();
-            check = userDAO.checkLogin(username, password);
-            message = (check) ? "login successfully" : "wrong username or password";
+            if (session.getAttribute("user") == null) {
+                UserDAO userDAO = new UserDAO();
+                check = userDAO.checkLogin(username, password);
+                if (check) {
+                    session.setAttribute("user", username);
+                    message = "login successfully";
+                } else {
+                    message = "wrong username or password";
+                }
+            } else {
+                message = "user has logged in";
+            }
         }
         ResponseAlert.response(resp, message, check);
     }

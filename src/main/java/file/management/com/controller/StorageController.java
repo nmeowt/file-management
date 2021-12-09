@@ -14,26 +14,23 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.List;
 
-@WebServlet(name = "storage", urlPatterns = { "/storage" }, initParams = {
-        @WebInitParam(name = "upload_path", value = "/var/www/upload") })
+@WebServlet(name = "storage", urlPatterns = {"/storage"}, initParams = {
+        @WebInitParam(name = "upload_path", value = "/var/www/upload")})
 @MultipartConfig
 public class StorageController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int owner = 1;
-        int parent = Integer.parseInt(req.getParameter("parent"));
-        int offset = Integer.parseInt(req.getParameter("offset"));
-        int limit = Integer.parseInt(req.getParameter("limit"));
+        int id = Integer.parseInt(req.getParameter("id"));
         StorageDAO storageDAO = new StorageDAO();
-        List<Storage> storages = storageDAO.read(owner, parent, offset, limit);
-        ResponseAlert.getStringStorages(resp, storages);
+        Storage storage = storageDAO.readById(id);
+        ResponseAlert.getStringStorage(resp, storage);
     }
 
-    static public List<Storage> getStorageByType(HttpServletRequest req, int type){
+    static public List<Storage> getStorageByType(HttpServletRequest req, int type) {
         int owner = 1;
-        int parent = 0;
+        int parent = Integer.parseInt(req.getParameter("parent"));
         int offset = Integer.parseInt(req.getParameter("offset"));
         int limit = Integer.parseInt(req.getParameter("limit"));
         StorageDAO storageDAO = new StorageDAO();

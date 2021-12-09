@@ -1,35 +1,39 @@
-file/management/com/constants/Constants.java
- file.management.com.constants.Constants
-file/management/com/dao/UserDAO.java
- file.management.com.dao.UserDAO
+file/management/com/controller/TypeController.java
+ file.management.com.controller.TypeController
 file/management/com/model/Storage.java
  file.management.com.model.Storage
 file/management/com/dao/TypeDAO.java
  file.management.com.dao.TypeDAO
-file/management/com/model/Type.java
- file.management.com.model.Type
-file/management/com/model/User.java
- file.management.com.model.User
-file/management/com/controller/SignUpController.java
- file.management.com.controller.SignUpController
+file/management/com/controller/StorageController.java
+ file.management.com.controller.StorageController
+file/management/com/utils/ZipFile.java
+ file.management.com.utils.ZipFile
+file/management/com/utils/Direction.java
+ file.management.com.utils.Direction
+file/management/com/controller/ChangeParentController.java
+ file.management.com.controller.ChangeParentController
+file/management/com/controller/DownloadFolderController.java
+ file.management.com.controller.DownloadFolderController
 file/management/com/dao/StorageDAO.java
  file.management.com.dao.StorageDAO
 file/management/com/mongo/Connection.java
  file.management.com.mongo.Connection
-file/management/com/controller/DownloadController.java
- file.management.com.controller.DownloadController
-file/management/com/controller/TypeController.java
- file.management.com.controller.TypeController
+file/management/com/controller/SignUpController.java
+ file.management.com.controller.SignUpController
+file/management/com/dao/UserDAO.java
+ file.management.com.dao.UserDAO
+file/management/com/controller/UpdateProfileController.java
+ file.management.com.controller.UpdateProfileController
+file/management/com/controller/LogoutController.java
+ file.management.com.controller.LogoutController
 file/management/com/controller/StorageChildController.java
  file.management.com.controller.StorageChildController
+file/management/com/model/Type.java
+ file.management.com.model.Type
 file/management/com/controller/RenameStorageController.java
  file.management.com.controller.RenameStorageController
-file/management/com/controller/StorageController.java
- file.management.com.controller.StorageController
-file/management/com/controller/LoginController.java
- file.management.com.controller.LoginController
-file/management/com/controller/ChangeParentController.java
- file.management.com.controller.ChangeParentController
+file/management/com/model/User.java
+ file.management.com.model.User
 file/management/com/utils/ResponseAlert.java
  file.management.com.utils.ResponseAlert
 file/management/com/controller/UploadFileController.java
@@ -38,5 +42,7 @@ file/management/com/controller/FileController.java
  file.management.com.controller.FileController
 file/management/com/controller/FolderController.java
  file.management.com.controller.FolderController
-file/management/com/controller/UpdateProfileController.java
- file.management.com.controller.UpdateProfileController
+file/management/com/constants/Constants.java
+ file.management.com.constants.Constants
+file/management/com/controller/LoginController.java
+ file.management.com.controller.LoginController

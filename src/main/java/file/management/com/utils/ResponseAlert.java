@@ -22,7 +22,7 @@ public class ResponseAlert {
 
     public static void getStringStorages(HttpServletResponse resp, List<Storage> storages) throws IOException {
         String newContext = "";
-        if(storages.toArray().length >0){
+        if (storages.toArray().length > 0) {
             String context = "";
             for (Storage storage : storages) {
                 context += storage.toJson() + ",";
@@ -38,10 +38,10 @@ public class ResponseAlert {
         out.flush();
     }
 
-    public static void getStringStorage(HttpServletResponse resp, Storage storages) throws IOException {
+    public static void getStringStorage(HttpServletResponse resp, Storage storage) throws IOException {
         resp.setContentType("application/json");
         PrintWriter out = resp.getWriter();
-        out.print(storages.toJson());
+        out.print(storage.toJson());
         setAccessControlHeaders(resp);
         resp.setStatus(HttpServletResponse.SC_OK);
         out.flush();
@@ -63,8 +63,7 @@ public class ResponseAlert {
         out.flush();
     }
 
-    public static void reponseUploadedFile(HttpServletResponse resp, String fileName, long fileSize)throws IOException {
-        String context = "{" + "\"file_name\": \"" + fileName + "\"," + "\"file_size\": \"" + fileSize + "\"" + "}";
+    private static void responseSet(HttpServletResponse resp, String context) throws IOException {
         setAccessControlHeaders(resp);
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.setContentType("application/json");
@@ -75,10 +74,19 @@ public class ResponseAlert {
         out.flush();
     }
 
-    public static void responseDownload(HttpServletResponse resp){
-        setAccessControlHeaders(resp);
-        resp.setStatus(HttpServletResponse.SC_OK);
-        resp.setContentType("application/json");
+    public static void responseUploadedFile(HttpServletResponse resp, String fileName, long fileSize, String location) throws IOException {
+        String context = "{"
+                + "\"file_name\": \"" + fileName
+                + "\"," + "\"file_size\": \"" + fileSize
+                + "\"," + "\"location\": \"" + location
+                + "\"" + "}";
+        responseSet(resp, context);
+    }
+    public static void responseDownloadFolder(HttpServletResponse resp, String zipFile) throws IOException {
+        String context = "{"
+                + "\"zip_file\": \"" + zipFile
+                + "\"" + "}";
+        responseSet(resp, context);
     }
 
     private static void setAccessControlHeaders(HttpServletResponse resp) {

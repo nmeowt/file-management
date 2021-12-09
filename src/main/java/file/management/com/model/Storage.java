@@ -13,6 +13,7 @@ public class Storage {
     private String body;
     @BsonProperty(value = "file_size")
     private int fileSize;
+    private String location;
     @BsonProperty(value = "created_at")
     private Date createdAt;
     @BsonProperty(value = "modified_at")
@@ -68,6 +69,14 @@ public class Storage {
         this.fileSize = fileSize;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -115,6 +124,7 @@ public class Storage {
                 ", \"parent\":" + parent +
                 ", \"name\":\"" + name + "\"" +
                 ", \"body\":\"" + body + "\"" +
+                ", \"location\":\"" + location + "\"" +
                 ", \"fileSize\":\"" + fileSize + "\"" +
                 ", \"createdAt\":\"" + createdAt + "\"" +
                 ", \"modifiedAt\":\"" + modifiedAt + "\"" +

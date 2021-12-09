@@ -1,6 +1,8 @@
 package file.management.com.controller;
 
+import file.management.com.dao.StorageDAO;
 import file.management.com.model.Storage;
+import file.management.com.utils.Direction;
 import file.management.com.utils.ResponseAlert;
 
 import javax.servlet.ServletConfig;
@@ -18,6 +20,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 
 @WebServlet(name = "upload-file", urlPatterns = {"/upload-file"}, initParams = {
         @WebInitParam(name = "upload_path", value = "/var/www/upload")})
@@ -26,7 +29,9 @@ public class UploadFileController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int parent = Integer.parseInt(req.getParameter("parent"));
         String dir = null;
+        String location = "";
 
         ServletConfig sc = getServletConfig();
         String path = sc.getInitParameter("upload_path");
@@ -35,10 +40,14 @@ public class UploadFileController extends HttpServlet {
         InputStream is = filePart.getInputStream();
 
         if (filePart.getSize() > 0) {
-            dir = path + File.separator + fileName;
-            System.out.println(dir);
+            ArrayList<String> listName = Direction.getDirection(parent);
+            listName.add(fileName);
+            for (String data : listName) {
+                location += File.separator + data;
+            }
+            dir = path + location;
             Files.copy(is, Paths.get(dir), StandardCopyOption.REPLACE_EXISTING);
         }
-        ResponseAlert.reponseUploadedFile(resp, fileName, filePart.getSize());
+        ResponseAlert.responseUploadedFile(resp, fileName, filePart.getSize(), location);
     }
 }
