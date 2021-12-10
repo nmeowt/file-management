@@ -24,8 +24,8 @@ file/management/com/dao/UserDAO.java
  file.management.com.dao.UserDAO
 file/management/com/controller/UpdateProfileController.java
  file.management.com.controller.UpdateProfileController
-file/management/com/controller/LogoutController.java
- file.management.com.controller.LogoutController
+file/management/com/controller/LoginController.java
+ file.management.com.controller.LoginController
 file/management/com/controller/StorageChildController.java
  file.management.com.controller.StorageChildController
 file/management/com/model/Type.java
@@ -44,5 +44,5 @@ file/management/com/controller/FolderController.java
  file.management.com.controller.FolderController
 file/management/com/constants/Constants.java
  file.management.com.constants.Constants
-file/management/com/controller/LoginController.java
- file.management.com.controller.LoginController
+file/management/com/controller/LogoutController.java
+ file.management.com.controller.LogoutController

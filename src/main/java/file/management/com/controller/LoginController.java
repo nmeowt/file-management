@@ -32,7 +32,6 @@ public class LoginController extends HttpServlet {
         boolean check = false;
         HttpSession session = req.getSession();
 
-
         if (username == null && password == null) {
             message = "username and password cannot be empty";
         } else {
