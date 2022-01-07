@@ -22,7 +22,7 @@ public class UserDAO {
         this.clientSettings = Connection.open();
     }
 
-    public boolean checkLogin(String username, String password) {
+    public User checkLogin(String username, String password) {
         try (MongoClient mongoClient = MongoClients.create(this.clientSettings)) {
             MongoDatabase database = mongoClient.getDatabase("file_management");
             MongoCollection<User> users = database.getCollection(collection, User.class);
@@ -31,10 +31,7 @@ public class UserDAO {
                             Filters.eq("username", username),
                             Filters.eq("password", password)
                     )).first();
-            if (user != null) {
-                return true;
-            }
-            return false;
+            return user;
         }
     }
 

@@ -20,6 +20,16 @@ public class ResponseAlert {
         out.flush();
     }
 
+    public static void loginResponse(HttpServletResponse resp, String token) throws IOException {
+        resp.setContentType("application/json");
+        PrintWriter out = resp.getWriter();
+        String context = "{" + "\"token\": \"" + token + "\"" + "}";
+        out.print(context);
+        setAccessControlHeaders(resp);
+        resp.setStatus(HttpServletResponse.SC_OK);
+        out.flush();
+    }
+
     public static void getStringStorages(HttpServletResponse resp, List<Storage> storages) throws IOException {
         String newContext = "";
         if (storages.toArray().length > 0) {

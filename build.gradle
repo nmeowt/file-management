@@ -29,6 +29,11 @@ dependencies {
     compile 'org.mongodb:mongodb-driver-legacy:4.1.2'
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.1'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.14.1'
+    compile 'javax.servlet:javax.servlet-api:3.1.0'
+    compileOnly group: 'javax.enterprise', name: 'cdi-api', version: '2.0.Alpha2'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2',
+            'io.jsonwebtoken:jjwt-jackson:0.11.2'
 }
 
 test {
