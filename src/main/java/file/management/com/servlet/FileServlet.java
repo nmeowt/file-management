@@ -1,7 +1,8 @@
-package file.management.com.controller;
+package file.management.com.servlet;
 
 import file.management.com.dao.StorageDAO;
 import file.management.com.model.Storage;
+import file.management.com.utils.Direction;
 import file.management.com.utils.ResponseAlert;
 
 import javax.servlet.ServletException;
@@ -18,13 +19,13 @@ import java.util.List;
 @WebServlet(name = "file", urlPatterns = {"/file"}, initParams = {
         @WebInitParam(name = "upload_path", value = "/var/www/upload")})
 @MultipartConfig
-public class FileController extends HttpServlet {
+public class FileServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final int type = 2;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Storage> storages = StorageController.getStorageByType(req, type);
+        List<Storage> storages = StorageServlet.getStorageByType(req, type);
         ResponseAlert.getStringStorages(resp, storages);
     }
 
@@ -32,7 +33,7 @@ public class FileController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String message = null;
         boolean check = false;
-        int owner = 1;
+        int owner = Direction.getOwner(req);
         String parent = req.getParameter("parent");
         String name = req.getParameter("name");
         String body = req.getParameter("body");

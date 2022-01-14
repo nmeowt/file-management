@@ -110,6 +110,7 @@ public class Storage {
                 ", parent=" + parent +
                 ", name='" + name + '\'' +
                 ", body='" + body + '\'' +
+                ", location='" + location + '\'' +
                 ", fileSize='" + fileSize + '\'' +
                 ", createdAt=" + createdAt +
                 ", modifiedAt=" + modifiedAt +

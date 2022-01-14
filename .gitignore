@@ -2,10 +2,8 @@
 # ------
 .gradle
 /build
-/*/build
-/*/*/build
-/*/*/*/build
-/*/*/*/*/build
+bin/
+build/
 /*/docs/src/samples/**/build
 /*/docs/src/snippets/**/build
 /*/internal-android-performance-testing/build-android-libs
@@ -35,3 +33,5 @@ test-splits/
 /.teamcity/target
 /gradle.ipr
 /gradle.iws
+
+

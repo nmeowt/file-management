@@ -1,4 +1,4 @@
-package file.management.com.controller;
+package file.management.com.servlet;
 
 import com.mongodb.MongoClient;
 import file.management.com.dao.TypeDAO;
@@ -18,7 +18,7 @@ import java.util.List;
 
 @WebServlet("/type")
 @MultipartConfig
-public class TypeController extends HttpServlet {
+public class TypeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         TypeDAO typeDAO = new TypeDAO();

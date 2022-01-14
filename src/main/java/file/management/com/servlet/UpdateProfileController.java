@@ -1,4 +1,4 @@
-package file.management.com.controller;
+package file.management.com.servlet;
 
 import file.management.com.dao.UserDAO;
 import file.management.com.model.User;

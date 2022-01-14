@@ -15,7 +15,6 @@ public class ResponseAlert {
         PrintWriter out = resp.getWriter();
         String context = "{" + "\"status\": \"" + check + "\"," + "\"message\": \"" + message + "\"" + "}";
         out.print(context);
-        setAccessControlHeaders(resp);
         resp.setStatus(HttpServletResponse.SC_OK);
         out.flush();
     }
@@ -25,7 +24,6 @@ public class ResponseAlert {
         PrintWriter out = resp.getWriter();
         String context = "{" + "\"token\": \"" + token + "\"" + "}";
         out.print(context);
-        setAccessControlHeaders(resp);
         resp.setStatus(HttpServletResponse.SC_OK);
         out.flush();
     }
@@ -43,7 +41,6 @@ public class ResponseAlert {
         resp.setContentType("application/json");
         PrintWriter out = resp.getWriter();
         out.print("[" + newContext + "]");
-        setAccessControlHeaders(resp);
         resp.setStatus(HttpServletResponse.SC_OK);
         out.flush();
     }
@@ -52,7 +49,6 @@ public class ResponseAlert {
         resp.setContentType("application/json");
         PrintWriter out = resp.getWriter();
         out.print(storage.toJson());
-        setAccessControlHeaders(resp);
         resp.setStatus(HttpServletResponse.SC_OK);
         out.flush();
     }
@@ -63,23 +59,19 @@ public class ResponseAlert {
             context += type.toJson() + ",";
         }
         String newContext = context.substring(0, context.length() - 1);
-        setAccessControlHeaders(resp);
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.setContentType("application/json");
         PrintWriter out = resp.getWriter();
         out.print("[" + newContext + "]");
-        setAccessControlHeaders(resp);
         resp.setStatus(HttpServletResponse.SC_OK);
         out.flush();
     }
 
     private static void responseSet(HttpServletResponse resp, String context) throws IOException {
-        setAccessControlHeaders(resp);
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.setContentType("application/json");
         PrintWriter out = resp.getWriter();
         out.print(context);
-        setAccessControlHeaders(resp);
         resp.setStatus(HttpServletResponse.SC_OK);
         out.flush();
     }
@@ -92,18 +84,11 @@ public class ResponseAlert {
                 + "\"" + "}";
         responseSet(resp, context);
     }
+
     public static void responseDownloadFolder(HttpServletResponse resp, String zipFile) throws IOException {
         String context = "{"
                 + "\"zip_file\": \"" + zipFile
                 + "\"" + "}";
         responseSet(resp, context);
-    }
-
-    private static void setAccessControlHeaders(HttpServletResponse resp) {
-        resp.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-        resp.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD, PUT, POST");
-        resp.setHeader("Access-Control-Allow-Headers",
-                "Accept,Authorization,Cache-Control,Content-Type,Keep-Alive,Origin,User-Agent,X-Requested-With");
-        resp.setHeader("Access-Control-Allow-Credentials", "true");
     }
 }

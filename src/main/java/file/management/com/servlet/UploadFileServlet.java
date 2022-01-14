@@ -1,7 +1,5 @@
-package file.management.com.controller;
+package file.management.com.servlet;
 
-import file.management.com.dao.StorageDAO;
-import file.management.com.model.Storage;
 import file.management.com.utils.Direction;
 import file.management.com.utils.ResponseAlert;
 
@@ -25,11 +23,12 @@ import java.util.ArrayList;
 @WebServlet(name = "upload-file", urlPatterns = {"/upload-file"}, initParams = {
         @WebInitParam(name = "upload_path", value = "/var/www/upload")})
 @MultipartConfig
-public class UploadFileController extends HttpServlet {
+public class UploadFileServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int parent = Integer.parseInt(req.getParameter("parent"));
+        int owner = Direction.getOwner(req);
         String dir = null;
         String location = "";
 
@@ -45,9 +44,9 @@ public class UploadFileController extends HttpServlet {
             for (String data : listName) {
                 location += File.separator + data;
             }
-            dir = path + location;
+            dir = path + File.separator + owner + location;
             Files.copy(is, Paths.get(dir), StandardCopyOption.REPLACE_EXISTING);
         }
-        ResponseAlert.responseUploadedFile(resp, fileName, filePart.getSize(), location);
+        ResponseAlert.responseUploadedFile(resp, fileName, filePart.getSize(), File.separator + owner + location);
     }
 }

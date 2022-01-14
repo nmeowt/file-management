@@ -1,4 +1,4 @@
-package file.management.com.controller;
+package file.management.com.servlet;
 
 import file.management.com.dao.StorageDAO;
 import file.management.com.model.Storage;
@@ -21,7 +21,7 @@ import java.util.zip.ZipOutputStream;
 @WebServlet(name = "download_folder", urlPatterns = {"/download_folder"}, initParams = {
         @WebInitParam(name = "upload_path", value = "/var/www/upload")})
 @MultipartConfig
-public class DownloadFolderController extends HttpServlet {
+public class DownloadFolderServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int id = Integer.parseInt(req.getParameter("id"));

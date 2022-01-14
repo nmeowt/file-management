@@ -1,4 +1,4 @@
-package file.management.com.controller;
+package file.management.com.servlet;
 
 import file.management.com.dao.StorageDAO;
 import file.management.com.model.Storage;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @WebServlet(name = "storage_child", urlPatterns = {"/storage/get_child"})
 @MultipartConfig
-public class StorageChildController extends HttpServlet {
+public class StorageChildServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override

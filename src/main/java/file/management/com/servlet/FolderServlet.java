@@ -1,4 +1,4 @@
-package file.management.com.controller;
+package file.management.com.servlet;
 
 import file.management.com.dao.StorageDAO;
 import file.management.com.model.Storage;
@@ -22,14 +22,13 @@ import java.util.List;
 @WebServlet(name = "folder", urlPatterns = {"/folder"}, initParams = {
         @WebInitParam(name = "upload_path", value = "/var/www/upload")})
 @MultipartConfig
-public class FolderController extends HttpServlet {
+public class FolderServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final int type = 1;
-    private static final int owner = 1;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Storage> storages = StorageController.getStorageByType(req, type);
+        List<Storage> storages = StorageServlet.getStorageByType(req, type);
         ResponseAlert.getStringStorages(resp, storages);
     }
 
@@ -40,6 +39,7 @@ public class FolderController extends HttpServlet {
         String dir = "";
         StorageDAO storageDAO = new StorageDAO();
 
+        int owner = Direction.getOwner(req);
         int parent = Integer.parseInt(req.getParameter("parent"));
         String name = req.getParameter("name");
 
@@ -54,15 +54,14 @@ public class FolderController extends HttpServlet {
             for (String data : listName) {
                 location += File.separator + data;
             }
-
-            dir = path + location;
+            dir = path + File.separator + owner + location;
 
             Storage storage = new Storage();
             storage.setOwner(owner);
             storage.setType(type);
             storage.setParent(parent);
             storage.setName(name);
-            storage.setLocation(location);
+            storage.setLocation(File.separator + owner + location);
             storage.setCreatedAt(new Date());
             storage.setModifiedAt(new Date());
             storageDAO.insert(storage);
@@ -77,4 +76,5 @@ public class FolderController extends HttpServlet {
 
         ResponseAlert.response(resp, message, check);
     }
+
 }

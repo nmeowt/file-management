@@ -1,4 +1,4 @@
-package file.management.com.controller;
+package file.management.com.servlet;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -7,6 +7,7 @@ import com.mongodb.client.MongoDatabase;
 import file.management.com.constants.Constants;
 import file.management.com.dao.UserDAO;
 import file.management.com.model.User;
+import file.management.com.utils.HashPassword;
 import org.bson.Document;
 
 import javax.servlet.ServletException;
@@ -23,9 +24,8 @@ import java.util.Date;
 
 @WebServlet(name = "signup", urlPatterns = {"/signup"})
 @MultipartConfig
-public class SignUpController extends HttpServlet {
+public class SignUpServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final String collection = "user";
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -34,6 +34,7 @@ public class SignUpController extends HttpServlet {
 
         String username = req.getParameter("username");
         String password = req.getParameter("password");
+        String hashedPass = HashPassword.hash(password);
         String name = req.getParameter("name");
         if (username == null || password == null || name == null) {
             message = "username, password, name cannot be empty";
@@ -41,7 +42,7 @@ public class SignUpController extends HttpServlet {
             UserDAO userDAO = new UserDAO();
             User user = new User();
             user.setUsername(username);
-            user.setPassword(password);
+            user.setPassword(hashedPass);
             user.setName(name);
             user.setCreatedAt(new Date());
             user.setModifiedAt(new Date());

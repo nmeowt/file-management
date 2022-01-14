@@ -1,80 +1,39 @@
 package file.management.com.utils;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 
-import javax.crypto.spec.SecretKeySpec;
-import java.io.FileInputStream;
+import javax.crypto.SecretKey;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.TemporalAmount;
 import java.util.Date;
-import java.util.Properties;
 
 public class JWT {
-    private static final String FILE_CONFIG = "/config.properties";
+    private static final String SECRET_KEY = "67f9efe1461b60c291898b9878f651faa2e6cddf8d4b0e5456475576c2c3c12b5bbd8b0a63574e53e52cb346beac0161e5a9cd1b7452fb57360d7438c830c26b ";
+    private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256;
+    private static final TemporalAmount TOKEN_VALIDITY = Duration.ofHours(24);
 
-    public static String createJWT( String subject, long ttlMillis) throws IOException {
-        Properties properties = new Properties();
-        InputStream inputStream = null;
-        JwtBuilder builder = null;
-        try {
-            String currentDir = System.getProperty("user.dir");
-            inputStream = new FileInputStream(currentDir + FILE_CONFIG);
-            // load properties from file
-            properties.load(inputStream);
-            // get property by name
-            String secretKey = properties.getProperty("SECRET_KEY");
-
-            //The JWT signature algorithm we will be using to sign the token
-            SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-            long nowMillis = System.currentTimeMillis();
-            Date now = new Date(nowMillis);
-
-            byte[] apiKeySecretBytes = secretKey.getBytes();
-            Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
-
-            //Let's set the JWT Claims
-            builder = Jwts.builder()
-                    .setIssuedAt(now)
-                    .setSubject(subject)
-                    .signWith(signatureAlgorithm, signingKey);
-
-            if (ttlMillis > 0) {
-                long expMillis = nowMillis + ttlMillis;
-                Date exp = new Date(expMillis);
-                builder.setExpiration(exp);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    public static String createJWT(String subject) throws IOException {
+        final Instant now = Instant.now();
+        final Date expiryDate = Date.from(now.plus(TOKEN_VALIDITY));
+        JwtBuilder builder = Jwts.builder()
+                .setIssuedAt(Date.from(now))
+                .setExpiration(expiryDate)
+                .setSubject(subject)
+                .signWith(SIGNATURE_ALGORITHM, SECRET_KEY);
         return builder.compact();
     }
 
-    public static Claims decodeJWT(String jwt) {
-        Properties properties = new Properties();
-        InputStream inputStream = null;
-        Claims claims = null;
-        try {
-            String currentDir = System.getProperty("user.dir");
-            inputStream = new FileInputStream(currentDir + FILE_CONFIG);
-            // load properties from file
-            properties.load(inputStream);
-            // get property by name
-            String secretKey = properties.getProperty("SECRET_KEY");
-            byte[] apiKeySecretBytes = secretKey.getBytes();
-            claims = Jwts.parser()
-                    .setSigningKey(apiKeySecretBytes)
-                    .parseClaimsJws(jwt).getBody();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return claims;
+    public static Jws<Claims> parseJWT(final String compactToken)
+            throws ExpiredJwtException,
+            UnsupportedJwtException,
+            MalformedJwtException,
+            SignatureException,
+            IllegalArgumentException {
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(compactToken);
     }
 }

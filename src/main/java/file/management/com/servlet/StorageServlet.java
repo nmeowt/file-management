@@ -1,8 +1,11 @@
-package file.management.com.controller;
+package file.management.com.servlet;
 
 import file.management.com.dao.StorageDAO;
 import file.management.com.model.Storage;
+import file.management.com.utils.JWT;
 import file.management.com.utils.ResponseAlert;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -17,7 +20,7 @@ import java.util.List;
 @WebServlet(name = "storage", urlPatterns = {"/storage"}, initParams = {
         @WebInitParam(name = "upload_path", value = "/var/www/upload")})
 @MultipartConfig
-public class StorageController extends HttpServlet {
+public class StorageServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -29,7 +32,9 @@ public class StorageController extends HttpServlet {
     }
 
     static public List<Storage> getStorageByType(HttpServletRequest req, int type) {
-        int owner = 1;
+        String token = (String) req.getAttribute("token");
+        Jws<Claims> jws = JWT.parseJWT(token);
+        int owner = Integer.parseInt(jws.getBody().getSubject());
         int parent = Integer.parseInt(req.getParameter("parent"));
         int offset = Integer.parseInt(req.getParameter("offset"));
         int limit = Integer.parseInt(req.getParameter("limit"));

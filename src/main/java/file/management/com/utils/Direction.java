@@ -2,7 +2,10 @@ package file.management.com.utils;
 
 import file.management.com.dao.StorageDAO;
 import file.management.com.model.Storage;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 
 public class Direction {
@@ -15,5 +18,11 @@ public class Direction {
             parent = parentStorage.getParent();
         }
         return listName;
+    }
+
+    public static int getOwner(HttpServletRequest req){
+        String token = (String) req.getAttribute("token");
+        Jws<Claims> jws = JWT.parseJWT(token);
+        return Integer.parseInt(jws.getBody().getSubject());
     }
 }

@@ -1,4 +1,4 @@
-package file.management.com.controller;
+package file.management.com.servlet;
 
 import file.management.com.dao.StorageDAO;
 import file.management.com.utils.ResponseAlert;
@@ -11,23 +11,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "change_parent_storage", urlPatterns = {"/storage/change_parent"})
+@WebServlet(name = "rename_storage", urlPatterns = {"/storage/rename"})
 @MultipartConfig
-public class ChangeParentController extends HttpServlet {
+public class RenameStorageServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String message = null;
         boolean check = false;
         int storageId = Integer.parseInt(req.getParameter("storage_id"));
-        int parent = Integer.parseInt(req.getParameter("parent"));
+        String name = req.getParameter("name");
 
-        if(storageId == 0 || parent == 0){
-            message = "storage id, parent cannot be empty";
+        if(storageId == 0 || name == null){
+            message = "storage id, name cannot be empty";
         } else {
             StorageDAO storageDAO = new StorageDAO();
-            storageDAO.changeParent(storageId, parent);
+            storageDAO.rename(storageId, name);
             check = true;
-            message = "changed parent successfully";
+            message = "renamed successfully";
         }
         ResponseAlert.response(resp, message, check);
     }
